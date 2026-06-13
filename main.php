@@ -1,11 +1,11 @@
 <?php
 /**
- * Plugin Name: World Pools Calculator
+ * Plugin Name: World Pools Smart Choice
  * Description: คำนวณปริมาตรสระน้ำเพื่อหาสินค้าที่เหมาะสม
  * Version: 1.0
  * Author: Jirakit Pawnsakunrungrot
  * Author URI: https://www.linkedin.com/in/sunny-jirakit
- * Plugin URI: https://github.com/sunny420x/worldpools-calculator
+ * Plugin URI: https://github.com/sunny420x/worldpools-smart-choice
  */
 
 //Deny access from URL.
