@@ -417,7 +417,7 @@ function wp_pool_calculator_settings_page() {
     <div class="white-label-zone no-print">
         <span style="padding: 60px 10px 60px 40px;float: left;font-size: 60px;">📦</span>
         <div style="padding: 20px 0;">
-            <h1>World Pools Calculator</h1>
+            <h1>World Pools Smart Choice</h1>
             <p>ตั้งค่าการคำนวณปริมาตรสระน้ำและสินค้าที่เหมาะสม
             <br>
             <strong>Github Repository:</strong> <a href="https://github.com/sunny420x/worldpools-calculator" target="_blank">https://github.com/sunny420x/worldpools-calculator</a>
@@ -503,7 +503,7 @@ function wp_pool_calculator_settings_page() {
 function wp_pool_calculator_page() {
 ?>
 <div class="wp_pool_calculator_page">
-    <h2>World Pools Smart Choice | ตัวช่วยเลือกอุปกรณ์สระว่ายน้ำ</h2>
+    <h2>✅ World Pools Smart Choice | ตัวช่วยเลือกอุปกรณ์สระว่ายน้ำ</h2>
     <hr>
     <div class="row">
         <div class="col-lg-8">
@@ -554,30 +554,44 @@ function wp_pool_calculator_page() {
 
     <div class="row" id="pool_spec">
         <div class="col-lg result_card">
-            <h4>ปริมาตรสระน้ำ (Volume)</h4>
+            <h4>💦 ปริมาตรสระน้ำ (Volume)</h4>
             <div id="pool_volume" style="margin-top: 20px; font-size: 18px;"></div>
         </div>
         <div class="col-lg result_card">
-            <h4>พื้นที่พื้นสระ (Floor Area)</h4>
+            <h4>🧱 พื้นที่พื้นสระ (Floor Area)</h4>
             <div id="pool_floor" style="margin-top: 20px; font-size: 18px;"></div>
         </div>
         <div class="col-lg result_card">
-            <h4>อัตราการไหลของน้ำ (Flow Rate)</h4>
+            <h4>💧 อัตราการไหลของน้ำ (Flow Rate)</h4>
             <div id="pool_flowrate" style="margin-top: 20px; font-size: 18px;"></div>
         </div>
     </div>
     <div class="row" id="recommended_products_specifications"> 
         <div class="col-lg result_card">
-            <h4>Flow Rate ของปั้มที่ต้องการ</h4>
+            <h4>🚀 Flow Rate ของปั้มที่ต้องการ</h4>
             <p style="font-size: 18px; margin-top: 20px;"> ≥ <span id="recommended_pool_pump_flowrate"></span></p>
         </div>
         <div class="col-lg result_card">
-            <h4>Flow Rate ของถังกรองที่ต้องการ</h4>
+            <h4>🛢️ Flow Rate ของถังกรองที่ต้องการ</h4>
             <p style="font-size: 18px; margin-top: 20px;"> ≥ <span id="recommended_pool_filter_flowrate"></span></p>
         </div>
         <div class="col-lg result_card">
-            <h4>หุ่นยนต์ทำความสะอาดสระ</h4>
+            <h4>🤖 หุ่นยนต์ทำความสะอาดสระ</h4>
             <p style="font-size: 18px; margin-top: 20px;"><span id="recommended_pool_robot_cleaner"></span></p>
+        </div>
+    </div>
+    <div class="row" id="recommended_chemicals">
+        <div class="col-lg result_card">
+            <h4>🧪 คลอรีน 90%</h4>
+            <p style="font-size: 18px; margin-top: 20px;"><span id="recommended_chlorine"></span></p>
+        </div>
+        <div class="col-lg result_card">
+            <h4>🧪 Swimtrine แก้น้ำเขียว</h4>
+            <p style="font-size: 18px; margin-top: 20px;"><span id="recommended_swimtrine"></span></p>
+        </div>
+        <div class="col-lg result_card">
+            <h4>🧪 Cleartrine แก้น้ำขุ่น</h4>
+            <p style="font-size: 18px; margin-top: 20px;"><span id="recommended_cleartrine"></span></p>
         </div>
     </div>
 
@@ -657,6 +671,7 @@ function wp_pool_calculator_page() {
         document.getElementById('pool_spec').style.display = 'none';
         document.getElementById('recommended_products_specifications').style.display = 'none'; // ซ่อนส่วนแนะนำสินค้าตั้งแต่เริ่มต้น
         document.getElementById('recommended_products').style.display = 'none'; // ซ่อนส่วนแนะนำสินค้าตั้งแต่เริ่มต้น
+        document.getElementById('recommended_chemicals').style.display = 'none'; // ซ่อนส่วนแนะนำสินค้าตั้งแต่เริ่มต้น
 
         async function fetchRecommendedProducts(flowRate, poolLength, poolFloorArea) {
             const formData = new FormData();
@@ -742,9 +757,18 @@ function wp_pool_calculator_page() {
             document.getElementById('recommended_pool_filter_flowrate').innerText = `${flowRate.toFixed(2)} m³/h`;
             document.getElementById('recommended_pool_robot_cleaner').innerText = `${floorArea.toFixed(0)} m² / ${length.toFixed(0)} m`;
 
+            document.getElementById('recommended_chlorine').innerText = `${(volume * 2).toFixed(1)} ถึง ${(volume * 3).toFixed(1)} กรัม 2-3 ครั้งต่อสัปดาห์`;
+            document.getElementById('recommended_swimtrine').innerText = `${((60 / 19) * volume).toFixed(1)} mL ในช่วงแรก ทุก ๆ 7 วัน
+            ${((30 / 19) * volume).toFixed(1)} mL เพื่อป้องกัน ทุก ๆ 10 - 14 วัน 
+            `;
+            document.getElementById('recommended_cleartrine').innerText = `${((60 / 19) * volume).toFixed(1)} mL ทุก 24 ชั่วโมงจนกว่าน้ำจะใส
+            ${((30 / 19) * volume).toFixed(1)} mL เพื่อป้องกัน ทุก ๆ 10 - 14 วัน 
+            `;
+
             document.getElementById('pool_spec').style.display = 'flex';
             document.getElementById('recommended_products_specifications').style.display = 'flex';
             document.getElementById('recommended_products').style.display = 'block';
+            document.getElementById('recommended_chemicals').style.display = 'flex';
 
             const result = await fetchRecommendedProducts(flowRate, length, floorArea);
             if ( result && result.success && result.data ) {
