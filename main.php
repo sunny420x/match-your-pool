@@ -13,12 +13,14 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 function match_your_pool_enqueue_assets() {
     //Load CSS
-    wp_enqueue_style(
-        'match_your_pool_style', 
-        plugins_url( '/css/style.css', __FILE__ ), 
-        array(), 
-        time()
-    );
+    if ( is_page( 'match-your-pool' ) ) {
+        wp_enqueue_style( 
+            'match_your_pool_style', 
+            plugins_url( '/css/style.css', __FILE__ ), 
+            array(), 
+            time() 
+        );
+    }
 }
 
 add_action( 'wp_enqueue_scripts', 'match_your_pool_enqueue_assets' );
@@ -334,7 +336,7 @@ function match_your_pool_ajax_add_to_cart() {
 function match_your_pool_menu() {
     add_menu_page(
         'Pool Calculator Settings', // Title ของหน้า
-        'ระบบคำนวณสระน้ำ', // ชื่อเมนูที่โชว์ในแถบข้าง
+        'Match Your Pool', // ชื่อเมนูที่โชว์ในแถบข้าง
         'manage_options', //สิทธิ์การเข้าถึง (Admin)
         'pool-calculator-settings', // Slug ของหน้า
         'match_your_pool_settings_page', // ฟังก์ชันที่ใช้พ่น HTML หน้า Setting
@@ -580,20 +582,6 @@ function match_your_pool_page() {
             <p style="font-size: 18px; margin-top: 20px;"><span id="recommended_pool_robot_cleaner"></span></p>
         </div>
     </div>
-    <div class="row" id="recommended_chemicals">
-        <div class="col-lg result_card">
-            <h4>🧪 คลอรีน 90%</h4>
-            <p style="font-size: 18px; margin-top: 20px;"><span id="recommended_chlorine"></span></p>
-        </div>
-        <div class="col-lg result_card">
-            <h4>🧪 Swimtrine แก้น้ำเขียว</h4>
-            <p style="font-size: 18px; margin-top: 20px;"><span id="recommended_swimtrine"></span></p>
-        </div>
-        <div class="col-lg result_card">
-            <h4>🧪 Cleartrine แก้น้ำขุ่น</h4>
-            <p style="font-size: 18px; margin-top: 20px;"><span id="recommended_cleartrine"></span></p>
-        </div>
-    </div>
 
     <div id="recommended_products">
         <h2>🛍️ สินค้าที่แนะนำ</h2>
@@ -649,6 +637,21 @@ function match_your_pool_page() {
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="row" id="recommended_chemicals">
+        <div class="col-lg result_card">
+            <h4>🧪 คลอรีน 90%</h4>
+            <p style="font-size: 18px; margin-top: 20px;"><span id="recommended_chlorine"></span></p>
+        </div>
+        <div class="col-lg result_card">
+            <h4>🧪 Swimtrine แก้น้ำเขียว</h4>
+            <p style="font-size: 18px; margin-top: 20px;"><span id="recommended_swimtrine"></span></p>
+        </div>
+        <div class="col-lg result_card">
+            <h4>🧪 Cleartrine แก้น้ำขุ่น</h4>
+            <p style="font-size: 18px; margin-top: 20px;"><span id="recommended_cleartrine"></span></p>
         </div>
     </div>
 
