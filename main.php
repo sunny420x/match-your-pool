@@ -1,33 +1,33 @@
 <?php
 /**
- * Plugin Name: World Pools Smart Choice
+ * Plugin Name: Match Your Pool - World Pools
  * Description: คำนวณปริมาตรสระน้ำเพื่อหาสินค้าที่เหมาะสม
  * Version: 1.0
  * Author: Jirakit Pawnsakunrungrot
  * Author URI: https://www.linkedin.com/in/sunny-jirakit
- * Plugin URI: https://github.com/sunny420x/worldpools-smart-choice
+ * Plugin URI: https://github.com/sunny420x/match-your-pool
  */
 
 //Deny access from URL.
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-function wp_pool_calculator_enqueue_assets() {
+function match_your_pool_enqueue_assets() {
     //Load CSS
     wp_enqueue_style(
-        'wp_pool_calculator_style', 
+        'match_your_pool_style', 
         plugins_url( '/css/style.css', __FILE__ ), 
         array(), 
         time()
     );
 }
 
-add_action( 'wp_enqueue_scripts', 'wp_pool_calculator_enqueue_assets' );
-add_action('admin_menu', 'wp_pool_calculator_menu');
-add_action('wp_ajax_wp_pool_calculator_recommend_products', 'wp_pool_calculator_recommend_products');
-add_action('wp_ajax_nopriv_wp_pool_calculator_recommend_products', 'wp_pool_calculator_recommend_products');
+add_action( 'wp_enqueue_scripts', 'match_your_pool_enqueue_assets' );
+add_action('admin_menu', 'match_your_pool_menu');
+add_action('wp_ajax_match_your_pool_recommend_products', 'match_your_pool_recommend_products');
+add_action('wp_ajax_nopriv_match_your_pool_recommend_products', 'match_your_pool_recommend_products');
 
-function wp_pool_calculator_recommend_products() {
-    if ( ! isset( $_POST['security'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['security'] ) ), 'wp_pool_calculator_recommend' ) ) {
+function match_your_pool_recommend_products() {
+    if ( ! isset( $_POST['security'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['security'] ) ), 'match_your_pool_recommend' ) ) {
         wp_send_json_error( 'Invalid request.' );
     }
 
@@ -43,11 +43,11 @@ function wp_pool_calculator_recommend_products() {
         wp_send_json_error( 'Flow rate is required.' );
     }
 
-    $results = wp_pool_calculator_get_recommended_products( $flow_rate, $pool_length, $pool_floor_area );
+    $results = match_your_pool_get_recommended_products( $flow_rate, $pool_length, $pool_floor_area );
     wp_send_json_success( $results );
 }
 
-function wp_pool_calculator_get_recommended_products( $minimum_flow_rate, $pool_length = 0, $pool_floor_area = 0 ) {
+function match_your_pool_get_recommended_products( $minimum_flow_rate, $pool_length = 0, $pool_floor_area = 0 ) {
     $product_lists = get_option('product_lists', array());
     // สร้าง Array map เพื่อให้หา type จาก slug ได้รวดเร็ว (ไม่ต้องวนลูปซ้ำ)
     $slug_to_profile = [];
@@ -122,7 +122,7 @@ function wp_pool_calculator_get_recommended_products( $minimum_flow_rate, $pool_
 
             // For pump and filter: filter by flowrate (check all parsed values)
             if ($type === 'filter' ) {
-                $matched_flows = wp_pool_calculator_parse_flow_rate( get_the_ID(), $content, $type );
+                $matched_flows = match_your_pool_parse_flow_rate( get_the_ID(), $content, $type );
 
                 if ( !empty( $matched_flows ) ) {
                     $passes = false;
@@ -150,7 +150,7 @@ function wp_pool_calculator_get_recommended_products( $minimum_flow_rate, $pool_
                 }
             }
             elseif ($type === 'pump' ) {
-                $matched_flows = wp_pool_calculator_parse_flow_rate( get_the_ID(), $content, $type );
+                $matched_flows = match_your_pool_parse_flow_rate( get_the_ID(), $content, $type );
 
                 if ( !empty( $matched_flows ) ) {
                     $passes = false;
@@ -195,7 +195,7 @@ function wp_pool_calculator_get_recommended_products( $minimum_flow_rate, $pool_
     return $recommended;
 }
 
-function wp_pool_calculator_parse_pool_size( $text ) {
+function match_your_pool_parse_pool_size( $text ) {
     $text = str_replace( array( ',', '\r', '\t' ), array( '.', "\n", ' ' ), $text );
     $clean_text = wp_strip_all_tags( $text );
     $clean_text = preg_replace( '/[ \f\v]+/', ' ', $clean_text );
@@ -211,7 +211,7 @@ function wp_pool_calculator_parse_pool_size( $text ) {
     return null;
 }
 
-function wp_pool_calculator_parse_flow_rate( $post_id, $content = '', $type = '' ) {
+function match_your_pool_parse_flow_rate( $post_id, $content = '', $type = '' ) {
     // 1. ดึงข้อมูลจาก option ที่เราเก็บไว้ (Priority 1)
     $product_lists = get_option('product_lists', array());
     $slug = get_post_field( 'post_name', $post_id );
@@ -242,7 +242,7 @@ function wp_pool_calculator_parse_flow_rate( $post_id, $content = '', $type = ''
     return !empty($flows) ? $flows : array();
 }
 
-function wp_pool_calculator_classify_product_type( $title, $categories = array() ) {
+function match_your_pool_classify_product_type( $title, $categories = array() ) {
     $combined = strtolower( $title . ' ' . implode( ' ', $categories ) );
 
     if ( preg_match( '/pump|ปั้ม|ปั๊ม|pump\b/i', $combined ) ) {
@@ -286,10 +286,10 @@ function fetch_variants_by_id() {
     wp_send_json_success( $variations ); 
 }
 
-add_action( 'wp_ajax_custom_add_to_cart', 'wp_pool_calculator_ajax_add_to_cart' );
-add_action( 'wp_ajax_nopriv_custom_add_to_cart', 'wp_pool_calculator_ajax_add_to_cart' );
+add_action( 'wp_ajax_custom_add_to_cart', 'match_your_pool_ajax_add_to_cart' );
+add_action( 'wp_ajax_nopriv_custom_add_to_cart', 'match_your_pool_ajax_add_to_cart' );
 
-function wp_pool_calculator_ajax_add_to_cart() {
+function match_your_pool_ajax_add_to_cart() {
     $product_id   = isset($_POST['product_id']) ? absint( wp_unslash( $_POST['product_id'] ) ) : 0; 
     $variation_id = isset($_POST['variation_id']) ? absint( wp_unslash( $_POST['variation_id'] ) ) : 0; 
     $quantity     = isset($_POST['quantity']) ? absint( wp_unslash( $_POST['quantity'] ) ) : 1;     
@@ -331,19 +331,19 @@ function wp_pool_calculator_ajax_add_to_cart() {
     wp_send_json_error( 'ไม่สามารถเพิ่มสินค้าลงตะกร้าได้ (สินค้าอาจหมด หรือติดเงื่อนไข)' );
 }
 
-function wp_pool_calculator_menu() {
+function match_your_pool_menu() {
     add_menu_page(
         'Pool Calculator Settings', // Title ของหน้า
         'ระบบคำนวณสระน้ำ', // ชื่อเมนูที่โชว์ในแถบข้าง
         'manage_options', //สิทธิ์การเข้าถึง (Admin)
         'pool-calculator-settings', // Slug ของหน้า
-        'wp_pool_calculator_settings_page', // ฟังก์ชันที่ใช้พ่น HTML หน้า Setting
+        'match_your_pool_settings_page', // ฟังก์ชันที่ใช้พ่น HTML หน้า Setting
         'dashicons-admin-tools', // ไอคอน
         '80' // ตำแหน่งเมนู
     );
 }
 
-function wp_pool_calculator_settings_page() {
+function match_your_pool_settings_page() {
     if (isset($_POST['saveProfile'])) {
         $profiles = get_option('product_lists', array());
         $id = sanitize_text_field($_POST['id']);
@@ -500,9 +500,9 @@ function wp_pool_calculator_settings_page() {
     <?php
 }
 
-function wp_pool_calculator_page() {
+function match_your_pool_page() {
 ?>
-<div class="wp_pool_calculator_page">
+<div class="match_your_pool_page">
     <h2>✅ World Pools Smart Choice | ตัวช่วยเลือกอุปกรณ์สระว่ายน้ำ</h2>
     <hr>
     <div class="row">
@@ -654,7 +654,7 @@ function wp_pool_calculator_page() {
 
     <script>
         const wpPoolCalculatorAjaxUrl = '<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>';
-        const wpPoolCalculatorNonce = '<?php echo esc_js( wp_create_nonce( 'wp_pool_calculator_recommend' ) ); ?>';
+        const wpPoolCalculatorNonce = '<?php echo esc_js( wp_create_nonce( 'match_your_pool_recommend' ) ); ?>';
 
         let width = null;
         let length = null;
@@ -675,7 +675,7 @@ function wp_pool_calculator_page() {
 
         async function fetchRecommendedProducts(flowRate, poolLength, poolFloorArea) {
             const formData = new FormData();
-            formData.append('action', 'wp_pool_calculator_recommend_products');
+            formData.append('action', 'match_your_pool_recommend_products');
             formData.append('flow_rate', flowRate);
             formData.append('pool_length', poolLength);
             formData.append('pool_floor_area', poolFloorArea);
@@ -989,4 +989,4 @@ function wp_pool_calculator_page() {
 <?php
 }
 
-add_shortcode( 'wp_pool_calculator_page', 'wp_pool_calculator_page' );
+add_shortcode( 'match_your_pool_page', 'match_your_pool_page' );
