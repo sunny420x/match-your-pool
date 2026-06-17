@@ -146,5 +146,8 @@
         .recommended_item {
             gap: 0;
         }
+        ul.match_your_pool_menu {
+            display: block;
+        }
     }
 }

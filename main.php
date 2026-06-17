@@ -547,9 +547,11 @@ function match_your_pool_page() {
         </script>
         <div class="row" style="gap: 10px; margin: 12px 0;">
             <div class="col-auto">
-                กรอกจำนวน Flow Rate ที่ต้องการ: <input type="text" id="search_by_flowrate" oninput="searchByAttributes(this.value, 0, 0, searchByAttributesFilter)" value="8"> m³/h
+                กรอกจำนวน Flow Rate ที่ต้องการ: <br>
+                <input type="text" id="search_by_flowrate" oninput="searchByAttributes(this.value, 0, 0, searchByAttributesFilter)" value="8"> m³/h
             </div>
             <div class="col-auto">
+                ต้องการกรองสินค้าประเภทไหนบ้าง ? <br>
                 <select name="" id="" onchange="setSearchByAttributesFilter(this.value)">
                     <option value="all">ทั้งหมด</option>
                     <option value="onlyPump">เฉพาะปั๊มสระว่ายน้ำ</option>
@@ -631,18 +633,20 @@ function match_your_pool_page() {
                 </div>
             </div> -->
         </div>
-        <table class="table">
-            <thead>
-                <th>รายการ</th>
-                <th>ประเภท</th>
-                <th>สเปค</th>
-                <th>ราคา</th>
-                <th>จัดการ</th>
-            </thead>
-            <tbody id="virtualCartTable">
-                
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <th>รายการ</th>
+                    <th>ประเภท</th>
+                    <th>สเปค</th>
+                    <th>ราคา</th>
+                    <th>จัดการ</th>
+                </thead>
+                <tbody id="virtualCartTable">
+                    
+                </tbody>
+            </table>
+        </div>
         <h4><span id="virtualCartSummery"></span> <button class="btn btn-primary" onclick="addMultipleToCart()" id="addMultipleToCartBtn">เพิ่มลงในตะกร้า</button></h4>
     </div>
         
