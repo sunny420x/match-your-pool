@@ -82,9 +82,20 @@
 
     ul.match_your_pool_menu {
         list-style: none; 
-        margin: 0 0 10px 0; 
         display: flex;
-        padding: 0;
+        padding: 0 0 5px 0;
+        margin: 0 0 -6px 0;
+    }
+
+    #pool_match_page,#flow_match_page,#maintenance_page {
+        border: 1px solid #eee;
+        padding: 20px;
+    }
+
+    #manualSelection,#readyToInstall {
+        border: 1px solid #eee;
+        padding: 20px;
+        margin: 0;
     }
 
     ul.match_your_pool_menu li {

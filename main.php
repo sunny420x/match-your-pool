@@ -482,7 +482,7 @@ function match_your_pool_page() {
             </div>
             <div class="col-lg-4">
                 <p>🕓 Turnover Time</p>
-                <div class="row turnover-btn-group">
+                <div class="row turnover-btn-group" style="padding: 0 10px;">
                     <div class="col-lg">
                         <button onclick="setTurnover(4)" class="turnover-btn" id="turnover-4">4 ชั่วโมง/รอบ</button>
                     </div>
@@ -527,7 +527,7 @@ function match_your_pool_page() {
 
     <div id="flow_match_page">
         <script>
-            let searchByAttributesFilter = "onlyPump";
+            let searchByAttributesFilter = "all";
 
             function setSearchByAttributesFilter(val) {
                 searchByAttributesFilter = val;
@@ -873,10 +873,6 @@ function match_your_pool_page() {
             }
             
             await searchByAttributes(flowRate, length, floorArea, mode);
-
-            if(virtual_cart.length > 0) {
-                document.getElementById('addMultipleToCartBtn').style.display = "block";
-            }
         }
 
         async function searchByAttributes(flowRate, length, floorArea, mode) {
@@ -1015,6 +1011,8 @@ function match_your_pool_page() {
                     title: 'เลือกปั๊มสระว่ายน้ำแล้ว !',
                     text: 'เลือกถังกรองสระว่ายน้ำต่อได้เลย !',
                     icon: 'success',
+                    showConfirmButton: false,
+                    timer: 1500
                 });
 
                 toggleProductRecommendation(type);
@@ -1051,6 +1049,8 @@ function match_your_pool_page() {
                     title: 'เลือกถังกรองและปั๊มแล้ว !',
                     text: 'กดเพิ่มลงในตะกร้าได้เลย !',
                     icon: 'success',
+                    showConfirmButton: false,
+                    timer: 1500
                 });
 
                 filterSelected = true;
@@ -1072,6 +1072,8 @@ function match_your_pool_page() {
                     title: 'เลือกปั๊มและถังกรองสระว่ายน้ำแล้ว !',
                     text: 'กดเพิ่มลงในตะกร้าได้เลย !',
                     icon: 'success',
+                    showConfirmButton: false,
+                    timer: 1500
                 });
             }
         }
@@ -1094,6 +1096,12 @@ function match_your_pool_page() {
             }
 
             document.getElementById('virtualCartSummery').innerHTML = `🛒 รวมทั้งสิ้น <b>${sum.toLocaleString()}</b> บาท`;
+
+            if(virtual_cart.length > 0) {
+                document.getElementById('addMultipleToCartBtn').style.display = "inline";
+            } else {
+                document.getElementById('addMultipleToCartBtn').style.display = "none";
+            }
         }
 
         function removeFromVirtualCart(title) {
