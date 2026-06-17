@@ -151,6 +151,10 @@ function match_your_pool_get_recommended_products($flow_rate, $pool_length, $poo
         $pumps = getPumpByFlowrate($flow_rate);
         $filters = getFilterByPumpFlowrate($flow_rate);
         $pumpsets = getPumpsetByFlowrate($flow_rate);
+
+        usort($pumps, fn($a, $b) => $a->spec <=> $b->spec);
+        usort($filters, fn($a, $b) => $a->spec <=> $b->spec);
+        usort($pumpsets, fn($a, $b) => $a->spec <=> $b->spec);
     
         // Helper to format product data
         foreach ($pumps as $pump) {
@@ -443,14 +447,33 @@ function match_your_pool_settings_page() {
 function match_your_pool_page() {
 ?>
 <div class="match_your_pool_page">
-    <h2>✅ Match Your Pool | ตัวช่วยเลือกอุปกรณ์สระว่ายน้ำ</h2>
-    <ul class="match_your_pool_menu">
-        <li id="pool_match_link" onclick="menuNavigation('pool_match')">🏖️ Pool Match แนะนำตามขนาดสระน้ำ</li>
-        <li id="flow_match_link" onclick="menuNavigation('flow_match')">🌊 Flow Match แนะนำสินค้าตาม Flow Rate ที่ต้องการ</li>
-        <li id="maintenance_link" onclick="menuNavigation('maintenance')">🔧 Maintenance แนะนำสินค้าช่วยดูแลสระ</li>
-    </ul>
+    <div class="jumbotron">
+        <span class="system_icon">💧</span>
+        <h1>Match Your Pool</h1>
+        <p>เครื่องมือช่วยเลือกอุปกรณ์สระว่ายน้ำที่เหมาะสมกับสระของคุณ</p>
+        <ul class="match_your_pool_menu">
+            <li id="pool_match_link" onclick="menuNavigation('pool_match')"><span class=icon>🏖️</span>
+                <div>
+                    <span class="title">Pool Match</span> 
+                    <span class="text">แนะนำตามขนาดสระน้ำ</span> 
+                </div>    
+            </li>
+            <li id="flow_match_link" onclick="menuNavigation('flow_match')"><span class=icon>🌊</span> 
+                <div>
+                    <span class="title">Flow Match</span> 
+                    <span class="text">แนะนำสินค้าตาม Flow Rate ที่ต้องการ</span>
+                </div>    
+            </li>
+            <li id="maintenance_link" onclick="menuNavigation('maintenance')"><span class=icon>🔧</span> 
+                <div>
+                    <span class="title">Maintenance</span> 
+                    <span class="text">แนะนำสินค้าช่วยดูแลสระ</span>
+                </div>
+            </li>
+        </ul>
+    </div>
     <div id="pool_match_page">
-        <div class="row">
+        <div class="row input_card">
             <div class="col-lg-8">
                 <div class="row input_group" style="margin: 12px 0 0 0;">
                     <div class="col-lg">
@@ -481,16 +504,16 @@ function match_your_pool_page() {
                 </div>
             </div>
             <div class="col-lg-4">
-                <p>🕓 Turnover Time</p>
+                <p>ระยะเวลาหมุนเวียนน้ำ (Turnover Time)</p>
                 <div class="row turnover-btn-group" style="padding: 0 10px;">
                     <div class="col-lg">
-                        <button onclick="setTurnover(4)" class="turnover-btn" id="turnover-4">4 ชั่วโมง/รอบ</button>
+                        <button onclick="setTurnover(4)" class="turnover-btn" id="turnover-4">🕓 4 ชั่วโมง</button>
                     </div>
                     <div class="col-lg">
-                        <button onclick="setTurnover(6)" class="turnover-btn" id="turnover-6">6 ชั่วโมง/รอบ</button>
+                        <button onclick="setTurnover(6)" class="turnover-btn" id="turnover-6">🕓 6 ชั่วโมง</button>
                     </div>
                     <div class="col-lg">
-                        <button onclick="setTurnover(8)" class="turnover-btn" id="turnover-8">8 ชั่วโมง/รอบ</button>
+                        <button onclick="setTurnover(8)" class="turnover-btn" id="turnover-8">🕓 8 ชั่วโมง</button>
                     </div>
                 </div>
             </div>
@@ -498,29 +521,29 @@ function match_your_pool_page() {
         <div class="row" id="pool_spec">
             <div class="col-lg result_card">
                 <h4>💦 ปริมาตรสระน้ำ (Volume)</h4>
-                <div id="pool_volume" style="margin-top: 20px; font-size: 18px;"></div>
+                <p id="pool_volume"></p>
             </div>
             <div class="col-lg result_card">
                 <h4>🧱 พื้นที่พื้นสระ (Floor Area)</h4>
-                <div id="pool_floor" style="margin-top: 20px; font-size: 18px;"></div>
+                <p id="pool_floor"></p>
             </div>
             <div class="col-lg result_card">
                 <h4>💧 อัตราการไหลของน้ำ (Flow Rate)</h4>
-                <div id="pool_flowrate" style="margin-top: 20px; font-size: 18px;"></div>
+                <p id="pool_flowrate"></p>
             </div>
         </div>
         <div class="row" id="recommended_products_specifications"> 
             <div class="col-lg result_card">
                 <h4>🚀 Flow Rate ของปั้มที่ต้องการ</h4>
-                <p style="font-size: 18px; margin-top: 20px;"> ≥ <span id="recommended_pool_pump_flowrate"></span></p>
+                <p> ≥ <span id="recommended_pool_pump_flowrate"></span></p>
             </div>
             <div class="col-lg result_card">
                 <h4>🛢️ Flow Rate ของถังกรองที่ต้องการ</h4>
-                <p style="font-size: 18px; margin-top: 20px;"> ≥ <span id="recommended_pool_filter_flowrate"></span></p>
+                <p> ≥ <span id="recommended_pool_filter_flowrate"></span></p>
             </div>
             <div class="col-lg result_card">
                 <h4>🤖 หุ่นยนต์ทำความสะอาดสระ</h4>
-                <p style="font-size: 18px; margin-top: 20px;"><span id="recommended_pool_robot_cleaner"></span></p>
+                <p><span id="recommended_pool_robot_cleaner"></span></p>
             </div>
         </div>
     </div>
@@ -545,10 +568,10 @@ function match_your_pool_page() {
                 }
             }
         </script>
-        <div class="row" style="gap: 10px; margin: 12px 0;">
+        <div class="row input_card" style="gap: 10px; margin: 12px 0;">
             <div class="col-auto">
                 กรอกจำนวน Flow Rate ที่ต้องการ: <br>
-                <input type="text" id="search_by_flowrate" oninput="searchByAttributes(this.value, 0, 0, searchByAttributesFilter)" value="8"> m³/h
+                <input type="number" id="search_by_flowrate" oninput="searchByAttributes(this.value, 0, 0, searchByAttributesFilter)" value="8"> m³/h
             </div>
             <div class="col-auto">
                 ต้องการกรองสินค้าประเภทไหนบ้าง ? <br>
@@ -562,7 +585,7 @@ function match_your_pool_page() {
     </div>
     <div id="poolProducts">
         <div id="recommended_products">
-            <ul class="match_your_pool_menu" style="margin-top: 20px;">
+            <ul class="match_your_pool_menu">
                 <li id="manual_selecting_option" onclick="optionNavigation('manual')">จับคู่ปั๊มและถังกรอง</li>
                 <li id="ready_to_install_option" onclick="optionNavigation('ready')">ชุดปั๊มและถังกรองสำเร็จรูป</li>
             </ul>
@@ -573,10 +596,10 @@ function match_your_pool_page() {
                         <span id="pool_pump_status">💡 ปั๊มสระว่ายน้ำ (Pool Pumps) <span id="current_required_flowrate"></span></span>
                     </h4>
                     </div>
-                    <div id="collapse_pool_pump_list" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                    <div id="collapse_pool_pump_list" aria-labelledby="headingOne">
                         <div class="card-body">
                             <div style="display: flex">
-                                <div id="recommended_pool_pump_list"></div>
+                                <div id="recommended_pool_pump_list" class="scroll-container"></div>
                                 <div id="pumpVariations"></div>
                             </div>
                         </div>
@@ -588,10 +611,10 @@ function match_your_pool_page() {
                         <span id="pool_filter_status">💡 ถังกรองสระว่ายน้ำ (Pool Filters) <span id="current_pump_flowrate"></span></span>
                     </h4>
                     </div>
-                    <div id="collapse_pool_filter_list" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                    <div id="collapse_pool_filter_list" aria-labelledby="headingOne">
                         <div class="card-body">
                             <div style="display: flex">
-                                <div id="recommended_pool_filter_list"></div>
+                                <div id="recommended_pool_filter_list" class="scroll-container"></div>
                                 <div id="filterVariations"></div>
                             </div>
                         </div>
@@ -605,10 +628,10 @@ function match_your_pool_page() {
                         <span id="pool_pump_status">💡 ชุดปั๊มและถังกรองสระว่ายน้ำ <span id="current_required_set_flowrate"></span></span>
                     </h4>
                     </div>
-                    <div id="collapse_pool_pump_list" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                    <div id="collapse_pool_pump_list" aria-labelledby="headingOne">
                         <div class="card-body">
                             <div style="display: flex">
-                                <div id="recommended_pool_pumpset_list"></div>
+                                <div id="recommended_pool_pumpset_list" class="scroll-container"></div>
                                 <div id="pumpsetVariations"></div>
                             </div>
                         </div>
@@ -633,21 +656,28 @@ function match_your_pool_page() {
                 </div>
             </div> -->
         </div>
-        <div class="table-responsive">
-            <table class="table">
-                <thead>
-                    <th>รายการ</th>
-                    <th>ประเภท</th>
-                    <th>สเปค</th>
-                    <th>ราคา</th>
-                    <th>จัดการ</th>
-                </thead>
-                <tbody id="virtualCartTable">
-                    
-                </tbody>
-            </table>
+        <br>
+        <div class="row products_list">
+            <div class="table-responsive col-lg-8">
+                <table class="table">
+                    <thead>
+                        <th colspan="2">รายการ</th>
+                        <th>สเปค</th>
+                        <th>ราคา</th>
+                        <th>จัดการ</th>
+                    </thead>
+                    <tbody id="virtualCartTable">
+                        <tr><td colspan='6'>ยังไม่มีอุปกรณ์สระว่ายน้ำที่คุณเลือก...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-4">
+                <h4>
+                    <span id="virtualCartSummery"></span> 
+                </h4>
+                <button class="btn btn-primary" onclick="addMultipleToCart()" id="addMultipleToCartBtn" style="width: 100%;">เพิ่มลงในตะกร้า</button>
+            </div>
         </div>
-        <h4><span id="virtualCartSummery"></span> <button class="btn btn-primary" onclick="addMultipleToCart()" id="addMultipleToCartBtn">เพิ่มลงในตะกร้า</button></h4>
     </div>
         
     <div id="maintenance_page">
@@ -799,15 +829,15 @@ function match_your_pool_page() {
             }
 
             container.innerHTML = items.map(item => {
-                const imageHtml = item.image ? `<div class="recommended_image"><a href="${item.link}" target="_blank" rel="noopener noreferrer"><img src="${item.image}" alt="${item.title}" loading="lazy"></a></div>` : '';
+                const imageHtml = item.image ? `<div class="recommended_image" style="background: url('${item.image}'); background-size: cover;"></div>` : '';
                 const metaText = type == "robot" ? `เหมาสำหรับสระน้ำ: ${item.max_length} m` : `FlowRate: ${item.spec} m³/h`;
                 return `
                 <div class="recommended_item">
                     ${imageHtml}
                 <div class="recommended_content">
-                    <a href="${item.link}" target="_blank" rel="noopener noreferrer" class="recommended_title">${item.title}</a>
-                    <div class="recommended_meta">${metaText} <br>ราคา: ${item.price || ''}</div>
-                    <button class="select_product_btn btn btn-primary" onclick="addToVirtualCart('${item.title}','${item.parent_id}', '${item.variant_id}', '${type}', '${item.spec}', '${item.esc_price}');" style="margin: 10px 0;">เลือก</button>
+                    <a class="recommended_title">${item.title}</a>
+                    <div class="recommended_meta">${metaText} <br>${item.price || ''}</div>
+                    <button class="select_product_btn btn btn-primary" onclick="addToVirtualCart('${item.title}','${item.image}','${item.parent_id}', '${item.variant_id}', '${type}', '${item.spec}', '${item.esc_price}');" style="margin: 10px 0;">เลือก</button>
                     </div>
                 </div>`;
             }).join('');
@@ -994,7 +1024,7 @@ function match_your_pool_page() {
             }
         }
 
-        async function addToVirtualCart(title, product_id, variation_id, type, spec, price) {
+        async function addToVirtualCart(title, img, product_id, variation_id, type, spec, price) {
             if(type == "pump") {
                 if(pumpSelected == true) {
                     virtual_cart = []
@@ -1002,6 +1032,7 @@ function match_your_pool_page() {
 
                 virtual_cart.push({
                     title: title,
+                    img: img,
                     parent_id: product_id,
                     variation_id: variation_id,
                     type: type,
@@ -1040,6 +1071,7 @@ function match_your_pool_page() {
 
                 virtual_cart.push({
                     title: title,
+                    img: img,
                     parent_id: product_id,
                     variation_id: variation_id,
                     type: type,
@@ -1063,6 +1095,7 @@ function match_your_pool_page() {
             if(type == "pumpset") {
                 virtual_cart.push({
                     title: title,
+                    img: img,
                     parent_id: product_id,
                     variation_id: variation_id,
                     type: type,
@@ -1083,17 +1116,22 @@ function match_your_pool_page() {
         }
 
         function initVirtualCart() {
-            document.getElementById("virtualCartTable").innerHTML = "";
-            sum = 0
+            let sum = 0
+
+            if(virtual_cart.length == 0) {
+                document.getElementById("virtualCartTable").innerHTML = "<tr><td colspan='6'>ยังไม่มีอุปกรณ์สระว่ายน้ำที่คุณเลือก...</td></tr>";
+            } else {
+                document.getElementById("virtualCartTable").innerHTML = "";
+            }
 
             for(i = 0; i < virtual_cart.length; i++) {
                 document.getElementById("virtualCartTable").innerHTML += `
                 <tr>
+                    <td><img src="${virtual_cart[i].img}" width="150"></td>
                     <td>${virtual_cart[i].title}</td>
-                    <td>${virtual_cart[i].type}</td>
                     <td>${virtual_cart[i].spec} m³/h</td>
                     <td>${parseInt(virtual_cart[i].price).toLocaleString()} บาท</td>
-                    <td><button class="btn" onclick="removeFromVirtualCart('${virtual_cart[i].title}')">🗑️</td>
+                    <td><button class="btn" onclick="removeFromVirtualCart('${virtual_cart[i].title}')">❌</td>
                 </tr>
                 `;
                 sum += parseInt(virtual_cart[i].price);
@@ -1116,6 +1154,7 @@ function match_your_pool_page() {
                 if (virtual_cart[i].title != title) {
                     updatedCart.push({
                         title: virtual_cart[i].title,
+                        img: virtual_cart[i].img,
                         parent_id: virtual_cart[i].parent_id,
                         variation_id: virtual_cart[i].variation_id,
                         type: virtual_cart[i].type,
@@ -1166,10 +1205,53 @@ function match_your_pool_page() {
             // หลังจากวนลูปครบแล้วค่อยอัปเดต UI ครั้งเดียว
             jQuery(document.body).trigger('wc_fragment_refresh');
         }
+        
+        function initProductsScroller() {
+            // Select ALL elements with the class
+            const sliders = document.querySelectorAll('.scroll-container');
+            
+            sliders.forEach(slider => {
+                let isDown = false;
+                let startX;
+                let scrollLeft;
+
+                slider.addEventListener('mousedown', (e) => {
+                    isDown = true;
+                    slider.classList.add('active');
+                    // Get coordinates relative to THIS specific slider
+                    startX = e.pageX - slider.offsetLeft;
+                    scrollLeft = slider.scrollLeft;
+                });
+
+                slider.addEventListener('mouseleave', () => {
+                    isDown = false;
+                    slider.classList.remove('active'); // Clean up active class
+                });
+
+                slider.addEventListener('mouseup', () => {
+                    isDown = false;
+                    slider.classList.remove('active'); // Clean up active class
+                });
+
+                slider.addEventListener('mousemove', (e) => {
+                    if (!isDown) return; 
+                    e.preventDefault();
+                    
+                    // Calculate distance dragged for THIS slider
+                    const x = e.pageX - slider.offsetLeft;
+                    const walk = (x - startX) * 1; // Multiplier adjusts scroll sensitivity
+                    
+                    slider.scrollLeft = scrollLeft - walk;
+                });
+            });
+        }
 
         // เรียกคำนวณครั้งแรกเมื่อโหลดหน้า
+        initProductsScroller();
         setTurnover(6);
         calculateVolume();
+
+
     </script>
 </div>
 <br><br>
