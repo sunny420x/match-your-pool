@@ -452,7 +452,7 @@ function match_your_pool_page() {
     <div id="pool_match_page">
         <div class="row">
             <div class="col-lg-8">
-                <div class="row" style="margin: 12px 0 0 0;">
+                <div class="row input_group" style="margin: 12px 0 0 0;">
                     <div class="col-lg">
                         <label for="width">ความกว้าง (เมตร):</label>
                         <input type="number" id="width" value="4" oninput="calculateVolume()" class="form-control">   
@@ -469,7 +469,7 @@ function match_your_pool_page() {
                         <label for="depth">ความลึกลึก (เมตร):</label>
                         <input type="number" id="depth_end" value="2" oninput="calculateVolume()" class="form-control">
                     </div>
-                    <div class="col-lg">
+                    <div class="col-lg p-0">
                         <label for="depth">รูปแบบสระ:</label>
                         <select id="pool_shape" class="form-control" onchange="calculateVolume()">
                             <option value="rectangular">สระรูปสี่เหลี่ยม</option>
@@ -647,7 +647,6 @@ function match_your_pool_page() {
     </div>
         
     <div id="maintenance_page">
-        <h2>🧰 Maintenance</h2>
         <div class="row" id="recommended_chemicals">
             <div class="col-lg result_card">
                 <h4>🧪 คลอรีน 90%</h4>
@@ -817,10 +816,6 @@ function match_your_pool_page() {
             let depth_end = parseFloat(document.getElementById('depth_end').value);
             let pool_shape = document.getElementById('pool_shape').value;
             let mode = 'all';
-            
-            // States management
-            let pumpSelected = false;
-            let filterSeleted = false;
 
             // Input Validation
             if (isNaN(width) || isNaN(length) || isNaN(depth_start) || isNaN(depth_end)) {

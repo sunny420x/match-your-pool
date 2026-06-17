@@ -69,6 +69,9 @@
     .turnover-btn-group {
         gap: 10px;
     }
+    .turnover-btn-group .col-lg {
+        padding: 0;
+    }
 
     #recommended_products #accordion .card .card-header {
     }
@@ -118,6 +121,14 @@
     button.btn-primary:before {
         padding: 8px 10px;
         background: transparent;
+    }
+
+    .input_group {
+        gap: 10px;
+    }
+
+    .input_group .col-lg {
+        padding: 0;
     }
 
     @media (max-width: 768px) {
