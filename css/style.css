@@ -45,7 +45,10 @@
         overflow-y: auto;
     }
 
-    #recommended_pool_pump_list.full,#recommended_pool_filter_list.full,#recommended_pool_robot_cleaner_list.full {
+    #recommended_pool_pump_list.full,
+    #recommended_pool_filter_list.full,
+    #recommended_pool_robot_cleaner_list.full,
+    #recommended_pool_pumpset_list.full {
         width: 100%;
         max-height: 400px;
         overflow-y: auto;
@@ -76,7 +79,7 @@
 
     ul.match_your_pool_menu {
         list-style: none; 
-        margin: 0 0 20px 0; 
+        margin: 0 0 10px 0; 
         display: flex;
         padding: 0;
     }
@@ -91,6 +94,30 @@
     }
     ul.match_your_pool_menu li.active {
         background: #fff !important;
+    }
+
+    button.btn {
+        border: 0;
+    }
+
+    button.btn-primary {
+        padding: 5px 10px;
+        border-radius: 20px;
+        background: transparent;
+        border: 1.5px solid #4382DF;
+        color: #4382DF;
+    }
+    button.btn-primary:hover{
+        padding: 5px 10px;
+        border: 1.5px solid #4382DF !important;
+        border-color: transparent;
+        outline: none;
+        color: #fff;
+        background: #4382DF;
+    }
+    button.btn-primary:before {
+        padding: 8px 10px;
+        background: transparent;
     }
 
     @media (max-width: 768px) {
