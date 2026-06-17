@@ -445,13 +445,14 @@ function match_your_pool_page() {
 <div class="match_your_pool_page">
     <h2>✅ Match Your Pool | ตัวช่วยเลือกอุปกรณ์สระว่ายน้ำ</h2>
     <ul class="match_your_pool_menu">
-        <li id="pool_match_link" onclick="menuNavigation('pool_match')">Pool Match แนะนำตามขนาดสระน้ำ</li>
-        <li id="flow_match_link" onclick="menuNavigation('flow_match')">Flow Match แนะนำสินค้าตาม Flow Rate ที่ต้องการ</li>
+        <li id="pool_match_link" onclick="menuNavigation('pool_match')">🏖️ Pool Match แนะนำตามขนาดสระน้ำ</li>
+        <li id="flow_match_link" onclick="menuNavigation('flow_match')">🌊 Flow Match แนะนำสินค้าตาม Flow Rate ที่ต้องการ</li>
+        <li id="maintenance_link" onclick="menuNavigation('maintenance')">🔧 Maintenance แนะนำสินค้าช่วยดูแลสระ</li>
     </ul>
     <div id="pool_match_page">
         <div class="row">
             <div class="col-lg-8">
-                <div class="row mt-2">
+                <div class="row" style="margin: 12px 0 0 0;">
                     <div class="col-lg">
                         <label for="width">ความกว้าง (เมตร):</label>
                         <input type="number" id="width" value="4" oninput="calculateVolume()" class="form-control">   
@@ -544,7 +545,7 @@ function match_your_pool_page() {
                 }
             }
         </script>
-        <div class="row" style="gap: 10px;">
+        <div class="row" style="gap: 10px; margin: 12px 0;">
             <div class="col-auto">
                 กรอกจำนวน Flow Rate ที่ต้องการ: <input type="text" id="search_by_flowrate" oninput="searchByAttributes(this.value, 0, 0, searchByAttributesFilter)" value="8"> m³/h
             </div>
@@ -557,21 +558,18 @@ function match_your_pool_page() {
             </div>
         </div>
     </div>
-    <br>
-    <div id="recommended_products">
-        <ul class="match_your_pool_menu">
-            <li id="manual_selecting_option" onclick="optionNavigation('manual')">จับคู่ปั๊มและถังกรอง</li>
-            <li id="ready_to_install_option" onclick="optionNavigation('ready')">ชุดปั๊มและถังกรองสำเร็จรูป</li>
-        </ul>
-        <div id="accordion">
+    <div id="poolProducts">
+        <div id="recommended_products">
+            <ul class="match_your_pool_menu" style="margin-top: 20px;">
+                <li id="manual_selecting_option" onclick="optionNavigation('manual')">จับคู่ปั๊มและถังกรอง</li>
+                <li id="ready_to_install_option" onclick="optionNavigation('ready')">ชุดปั๊มและถังกรองสำเร็จรูป</li>
+            </ul>
             <div class="row" id="manualSelection">
                 <div class="card col-lg" id="pumpProducts">
                     <div class="card-header" id="headingOne">
-                    <h2 class="mb-0">
-                        <button class="btn btn-link">
-                            <span id="pool_pump_status">💡 ปั๊มสระว่ายน้ำ (Pool Pumps) <span id="current_required_flowrate"></span></span>
-                        </button>
-                    </h2>
+                    <h4 class="mb-0">
+                        <span id="pool_pump_status">💡 ปั๊มสระว่ายน้ำ (Pool Pumps) <span id="current_required_flowrate"></span></span>
+                    </h4>
                     </div>
                     <div id="collapse_pool_pump_list" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
                         <div class="card-body">
@@ -584,11 +582,9 @@ function match_your_pool_page() {
                 </div>
                 <div class="card col-lg" id="filterProducts">
                     <div class="card-header" id="headingOne">
-                    <h2 class="mb-0">
-                        <button class="btn btn-link">
-                            <span id="pool_filter_status">💡 ถังกรองสระว่ายน้ำ (Pool Filters) <span id="current_pump_flowrate"></span></span>
-                        </button>
-                    </h2>
+                    <h4 class="mb-0">
+                        <span id="pool_filter_status">💡 ถังกรองสระว่ายน้ำ (Pool Filters) <span id="current_pump_flowrate"></span></span>
+                    </h4>
                     </div>
                     <div id="collapse_pool_filter_list" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
                         <div class="card-body">
@@ -603,11 +599,9 @@ function match_your_pool_page() {
             <div class="row" id="readyToInstall">
                 <div class="card col-lg" id="pumpProducts">
                     <div class="card-header" id="headingOne">
-                    <h2 class="mb-0">
-                        <button class="btn btn-link">
-                            <span id="pool_pump_status">💡 ชุดปั๊มและถังกรองสระว่ายน้ำ <span id="current_required_set_flowrate"></span></span>
-                        </button>
-                    </h2>
+                    <h4 class="mb-0">
+                        <span id="pool_pump_status">💡 ชุดปั๊มและถังกรองสระว่ายน้ำ <span id="current_required_set_flowrate"></span></span>
+                    </h4>
                     </div>
                     <div id="collapse_pool_pump_list" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
                         <div class="card-body">
@@ -637,38 +631,122 @@ function match_your_pool_page() {
                 </div>
             </div> -->
         </div>
+        <table class="table">
+            <thead>
+                <th>รายการ</th>
+                <th>ประเภท</th>
+                <th>สเปค</th>
+                <th>ราคา</th>
+                <th>จัดการ</th>
+            </thead>
+            <tbody id="virtualCartTable">
+                
+            </tbody>
+        </table>
+        <h4><span id="virtualCartSummery"></span> <button class="btn btn-primary" onclick="addMultipleToCart()" id="addMultipleToCartBtn">เพิ่มลงในตะกร้า</button></h4>
     </div>
-    <table class="table">
-        <thead>
-            <th>รายการ</th>
-            <th>ประเภท</th>
-            <th>สเปค</th>
-            <th>ราคา</th>
-            <th>จัดการ</th>
-        </thead>
-        <tbody id="virtualCartTable">
-
-        </tbody>
-    </table>
-    <h4><span id="virtualCartSummery"></span> <button class="btn btn-primary" onclick="addMultipleToCart()">เพิ่มลงในตะกร้า</button></h4>
-
-    <h2>🧰 Maintaining</h2>
-    <div class="row" id="recommended_chemicals">
-        <div class="col-lg result_card">
-            <h4>🧪 คลอรีน 90%</h4>
-            <p style="font-size: 18px; margin-top: 20px;"><span id="recommended_chlorine"></span></p>
-        </div>
-        <div class="col-lg result_card">
-            <h4>🧪 Swimtrine แก้น้ำเขียว</h4>
-            <p style="font-size: 18px; margin-top: 20px;"><span id="recommended_swimtrine"></span></p>
-        </div>
-        <div class="col-lg result_card">
-            <h4>🧪 Cleartrine แก้น้ำขุ่น</h4>
-            <p style="font-size: 18px; margin-top: 20px;"><span id="recommended_cleartrine"></span></p>
+        
+    <div id="maintenance_page">
+        <h2>🧰 Maintenance</h2>
+        <div class="row" id="recommended_chemicals">
+            <div class="col-lg result_card">
+                <h4>🧪 คลอรีน 90%</h4>
+                <p style="font-size: 18px; margin-top: 20px;"><span id="recommended_chlorine"></span></p>
+            </div>
+            <div class="col-lg result_card">
+                <h4>🧪 Swimtrine แก้น้ำเขียว</h4>
+                <p style="font-size: 18px; margin-top: 20px;"><span id="recommended_swimtrine"></span></p>
+            </div>
+            <div class="col-lg result_card">
+                <h4>🧪 Cleartrine แก้น้ำขุ่น</h4>
+                <p style="font-size: 18px; margin-top: 20px;"><span id="recommended_cleartrine"></span></p>
+            </div>
         </div>
     </div>
 
     <script>
+        // ----- Globle Variables -----
+        let pumpSelected = false;
+        let filterSelected = false;
+
+        // ----- Navigation System -----
+        let page;
+        let selecting_option;
+
+        function menuNavigation(target) {
+            page = target;
+            initMenu();
+        }
+
+        function optionNavigation(target) {
+            selecting_option = target;
+            initMenu();
+        }
+
+        function initMenu() {
+            if(page == "pool_match") {
+                document.getElementById('pool_match_link').classList.add('active')
+                document.getElementById('flow_match_link').classList.remove('active')
+                document.getElementById('maintenance_link').classList.remove('active')
+                
+                document.getElementById('flow_match_page').style.display = "none";
+                document.getElementById('maintenance_page').style.display = "none";
+                document.getElementById('pool_match_page').style.display = "block";
+
+                if(pumpSelected == false) {
+                    document.getElementById('filterProducts').style.display = "none";
+                }
+
+                document.getElementById('poolProducts').style.display = "block";
+            }
+
+            if(page == "flow_match") {
+                document.getElementById('filterProducts').style.display = "block";
+
+                document.getElementById('flow_match_link').classList.add('active')
+                document.getElementById('pool_match_link').classList.remove('active')
+                document.getElementById('maintenance_link').classList.remove('active')
+            
+                document.getElementById('pool_match_page').style.display = "none";
+                document.getElementById('maintenance_page').style.display = "none";
+                document.getElementById('flow_match_page').style.display = "block";
+
+                document.getElementById('poolProducts').style.display = "block";
+            }
+
+            if(page == "maintenance") {
+                document.getElementById('pool_match_link').classList.remove('active')
+                document.getElementById('flow_match_link').classList.remove('active')
+                document.getElementById('maintenance_link').classList.add('active')
+
+                document.getElementById('pool_match_page').style.display = "none";
+                document.getElementById('flow_match_page').style.display = "none";
+                document.getElementById('maintenance_page').style.display = "block";
+            
+                document.getElementById('poolProducts').style.display = "none";
+            }
+
+            // In-page Option
+            if(selecting_option == "manual") {
+                document.getElementById('manual_selecting_option').classList.add('active')
+                document.getElementById('ready_to_install_option').classList.remove('active')
+                
+                document.getElementById('readyToInstall').style.display = "none";
+                document.getElementById('manualSelection').style.display = "flex";
+            }
+
+            if(selecting_option == "ready") {
+                document.getElementById('manual_selecting_option').classList.remove('active')
+                document.getElementById('ready_to_install_option').classList.add('active')
+
+                document.getElementById('readyToInstall').style.display = "flex";
+                document.getElementById('manualSelection').style.display = "none";
+            }
+        }
+
+        menuNavigation("pool_match");
+        optionNavigation("manual");
+
         //----- Pool Match System -----
         const wpPoolCalculatorAjaxUrl = '<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>';
         const wpPoolCalculatorNonce = '<?php echo esc_js( wp_create_nonce( 'match_your_pool_recommend' ) ); ?>';
@@ -680,15 +758,13 @@ function match_your_pool_page() {
         let turnover = 6;
         let pool_shape = 'rectangular';
 
-        let pumpSelected = false;
-        let filterSelected = false;
-
         let virtual_cart = [];
 
         document.getElementById('pool_spec').style.display = 'none';
         document.getElementById('recommended_products_specifications').style.display = 'none';
         document.getElementById('recommended_products').style.display = 'none';
         document.getElementById('recommended_chemicals').style.display = 'none';
+        document.getElementById('addMultipleToCartBtn').style.display = 'none';
 
         async function fetchRecommendedProducts(flowRate, poolLength, poolFloorArea, mode) {
             const formData = new FormData();
@@ -742,8 +818,11 @@ function match_your_pool_page() {
             let pool_shape = document.getElementById('pool_shape').value;
             let mode = 'all';
             
-            pumpSelected = false;
+            // States management
+            let pumpSelected = false;
+            let filterSeleted = false;
 
+            // Input Validation
             if (isNaN(width) || isNaN(length) || isNaN(depth_start) || isNaN(depth_end)) {
                 document.getElementById('pool_volume').innerText = 'กรุณากรอกตัวเลขที่ถูกต้อง';
                 return;
@@ -794,11 +873,15 @@ function match_your_pool_page() {
 
             document.getElementById('current_required_flowrate').innerHTML = "สำหรับสระน้ำที่ต้องการ Flow Rate ≥ "+flowRate.toFixed(2)+" m³/h";
 
-            if(pumpSelected) {
+            if(pumpSelected && page == "pool_match") {
                 mode = 'onlyFilter'
             }
             
             await searchByAttributes(flowRate, length, floorArea, mode);
+
+            if(virtual_cart.length > 0) {
+                document.getElementById('addMultipleToCartBtn').style.display = "block";
+            }
         }
 
         async function searchByAttributes(flowRate, length, floorArea, mode) {
@@ -970,7 +1053,7 @@ function match_your_pool_page() {
                 initVirtualCart();
 
                 Swal.fire({
-                    title: 'เลือกถังกรองและปั๊มเรียบร้อยแล้ว !',
+                    title: 'เลือกถังกรองและปั๊มแล้ว !',
                     text: 'กดเพิ่มลงในตะกร้าได้เลย !',
                     icon: 'success',
                 });
@@ -1080,62 +1163,6 @@ function match_your_pool_page() {
         // เรียกคำนวณครั้งแรกเมื่อโหลดหน้า
         setTurnover(6);
         calculateVolume();
-
-        let page;
-        let selecting_option;
-
-        function menuNavigation(target) {
-            page = target;
-            initMenu();
-        }
-
-        function optionNavigation(target) {
-            selecting_option = target;
-            initMenu();
-        }
-
-        function initMenu() {
-            if(page == "pool_match") {
-                document.getElementById('pool_match_link').classList.add('active')
-                document.getElementById('flow_match_link').classList.remove('active')
-                
-                document.getElementById('flow_match_page').style.display = "none";
-                document.getElementById('pool_match_page').style.display = "block";
-
-                if(pumpSelected == false) {
-                    document.getElementById('filterProducts').style.display = "none";
-                }
-            }
-
-            if(page == "flow_match") {
-                document.getElementById('filterProducts').style.display = "block";
-
-                document.getElementById('flow_match_link').classList.add('active')
-                document.getElementById('pool_match_link').classList.remove('active')
-            
-                document.getElementById('pool_match_page').style.display = "none";
-                document.getElementById('flow_match_page').style.display = "block";
-            }
-
-            if(selecting_option == "manual") {
-                document.getElementById('manual_selecting_option').classList.add('active')
-                document.getElementById('ready_to_install_option').classList.remove('active')
-                
-                document.getElementById('readyToInstall').style.display = "none";
-                document.getElementById('manualSelection').style.display = "flex";
-            }
-
-            if(selecting_option == "ready") {
-                document.getElementById('manual_selecting_option').classList.remove('active')
-                document.getElementById('ready_to_install_option').classList.add('active')
-
-                document.getElementById('readyToInstall').style.display = "flex";
-                document.getElementById('manualSelection').style.display = "none";
-            }
-        }
-
-        menuNavigation("pool_match");
-        optionNavigation("manual");
     </script>
 </div>
 <br><br>
