@@ -700,6 +700,29 @@ function match_your_pool_page() {
                 <p style="font-size: 18px; margin-top: 20px;"><span id="recommended_cleartrine"></span></p>
             </div>
         </div>
+        <div class="recommended_chemicals_products">
+            <?php
+            $slugs = [
+                'คลอรีน-90-ชนิดเม็ด-เกล็ด-chlorine-90',
+                'น้ำยากำจัดตะไคร่น้ำ-swimtrine-plus',
+                'น้ำยาป้องกันน้ำขุ่น-cleartrine',
+                'liquid-shock-chlorine-ขนาด-1l'
+            ];
+
+            foreach ($slugs as $slug) {
+                // หา ID จาก Slug โดยใช้ฟังก์ชันหลักของ WordPress
+                $product_post = get_page_by_path($slug, OBJECT, 'product');
+                
+                if ($product_post) {
+            ?>
+                <div><?= do_shortcode('[product id="' . $product_post->ID . '"]'); ?></div>
+            <?php
+                } else {
+                    echo '<p>ไม่พบสินค้า: ' . esc_html($slug) . '</p>';
+                }
+            }
+            ?>
+        </div>
     </div>
 
     <script>

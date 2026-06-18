@@ -64,7 +64,6 @@
         width: auto;
     }
 
-
     .recommended_title {
         font-size: 16px; 
         font-weight: 400;
@@ -86,6 +85,10 @@
         padding: 20px;
         box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.008), 0 0px 20px 0 rgba(0, 0, 0, 0.05);
         margin: 0;
+    }
+
+    .products_list .table-responsive table.table {
+        white-space: nowrap;
     }
 
     #recommended_pool_pump_list,#recommended_pool_filter_list,#recommended_pool_robot_cleaner_list,#recommended_pool_pumpset_list {
@@ -128,9 +131,6 @@
     }
     .turnover-btn-group .col-lg {
         padding: 0;
-    }
-
-    #recommended_products #accordion .card .card-header {
     }
 
     #recommended_products #accordion .card .card-header h2 button {
@@ -280,11 +280,34 @@
         padding: 0;
     }
 
+    .recommended_chemicals_products {
+        display: flex;
+        margin: 20px 0 0 0;
+    }
+    .recommended_chemicals_products .woocommerce {
+        padding: 15px;
+    }
+    .recommended_chemicals_products ul.products {
+        display: block !important;
+        width: 100%;
+    }
+    .recommended_chemicals_products ul.products .product {
+        max-width: 100% !important;
+    }
+
     @media (max-width: 768px) {
         .recommended_item {
             gap: 0;
+            min-width: 250px;
+            grid-template-columns: 1fr;
+        }
+        .recommended_item .recommended_image {
+            height: 200px;
         }
         ul.match_your_pool_menu {
+            display: block;
+        }
+        .recommended_chemicals_products {
             display: block;
         }
     }
