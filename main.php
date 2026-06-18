@@ -125,7 +125,8 @@ function match_your_pool_get_recommended_products($flow_rate, $pool_length, $poo
                     'spec'  => $pump->spec,
                     'parent_id' => $pump->parent_id,
                     'variant_id' => $pump->variant_id,
-                    'esc_price'=> $product->get_price()
+                    'esc_price'=> $product->get_price(),
+                    'link'=>$product->get_permalink()
                 ];
             }
         }
@@ -143,7 +144,8 @@ function match_your_pool_get_recommended_products($flow_rate, $pool_length, $poo
                     'spec'  => $filter->spec,
                     'parent_id' => $filter->parent_id,
                     'variant_id' => $filter->variant_id,
-                    'esc_price'=> $product->get_price()
+                    'esc_price'=> $product->get_price(),
+                    'link'=>$product->get_permalink()
                 ];
             }
         }
@@ -168,7 +170,8 @@ function match_your_pool_get_recommended_products($flow_rate, $pool_length, $poo
                     'spec'  => $pump->spec,
                     'parent_id' => $pump->parent_id,
                     'variant_id' => $pump->variant_id,
-                    'esc_price'=> $product->get_price()
+                    'esc_price'=> $product->get_price(),
+                    'link'=>$product->get_permalink()
                 ];
             }
         }
@@ -184,7 +187,8 @@ function match_your_pool_get_recommended_products($flow_rate, $pool_length, $poo
                     'spec'  => $filter->spec,
                     'parent_id' => $filter->parent_id,
                     'variant_id' => $filter->variant_id,
-                    'esc_price'=> $product->get_price()
+                    'esc_price'=> $product->get_price(),
+                    'link'=>$product->get_permalink()
                 ];
             }
         }
@@ -200,7 +204,8 @@ function match_your_pool_get_recommended_products($flow_rate, $pool_length, $poo
                     'spec'  => $pumpset->spec,
                     'parent_id' => $pumpset->parent_id,
                     'variant_id' => $pumpset->variant_id,
-                    'esc_price'=> $product->get_price()
+                    'esc_price'=> $product->get_price(),
+                    'link'=>$product->get_permalink()
                 ];
             }
         }
@@ -472,13 +477,12 @@ function match_your_pool_page() {
             </li>
         </ul>
     </div>
-    <div id="pool_match_page">
-        <div class="row input_card">
-            <div class="col-lg-8">
-                <div class="row input_group" style="margin: 12px 0 0 0;">
-                    <div class="col-lg">
-                        <label for="width">ความกว้าง (เมตร):</label>
-                        <input type="number" id="width" value="4" oninput="calculateVolume()" class="form-control">   
+    <div class="row input_card" id="pool_size_input">
+        <div class="col-lg-8">
+            <div class="row input_group" style="margin: 12px 0 0 0;">
+                <div class="col-lg">
+                    <label for="width">ความกว้าง (เมตร):</label>
+                    <input type="number" id="width" value="4" oninput="calculateVolume()" class="form-control">   
                     </div>
                     <div class="col-lg">
                         <label for="length">ความยาว (เมตร):</label>
@@ -503,7 +507,7 @@ function match_your_pool_page() {
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4">
+            <div class="col-lg-4" id="turnover_input">
                 <p>ระยะเวลาหมุนเวียนน้ำ (Turnover Time)</p>
                 <div class="row turnover-btn-group" style="padding: 0 10px;">
                     <div class="col-lg">
@@ -518,34 +522,35 @@ function match_your_pool_page() {
                 </div>
             </div>
         </div>
-        <div class="row" id="pool_spec">
-            <div class="col-lg result_card">
-                <h4>💦 ปริมาตรสระน้ำ (Volume)</h4>
-                <p id="pool_volume"></p>
+        <div id="pool_match_page">
+            <div class="row" id="pool_spec">
+                <div class="col-lg result_card">
+                    <h4>💦 ปริมาตรสระน้ำ (Volume)</h4>
+                    <p id="pool_volume"></p>
+                </div>
+                <div class="col-lg result_card">
+                    <h4>🧱 พื้นที่พื้นสระ (Floor Area)</h4>
+                    <p id="pool_floor"></p>
+                </div>
+                <div class="col-lg result_card">
+                    <h4>💧 อัตราการไหลของน้ำ (Flow Rate)</h4>
+                    <p id="pool_flowrate"></p>
+                </div>
             </div>
-            <div class="col-lg result_card">
-                <h4>🧱 พื้นที่พื้นสระ (Floor Area)</h4>
-                <p id="pool_floor"></p>
+            <div class="row" id="recommended_products_specifications"> 
+                <div class="col-lg result_card">
+                    <h4>🚀 Flow Rate ของปั้มที่ต้องการ</h4>
+                    <p> ≥ <span id="recommended_pool_pump_flowrate"></span></p>
+                </div>
+                <div class="col-lg result_card">
+                    <h4>🛢️ Flow Rate ของถังกรองที่ต้องการ</h4>
+                    <p> ≥ <span id="recommended_pool_filter_flowrate"></span></p>
+                </div>
+                <div class="col-lg result_card">
+                    <h4>🤖 หุ่นยนต์ทำความสะอาดสระ</h4>
+                    <p><span id="recommended_pool_robot_cleaner"></span></p>
+                </div>
             </div>
-            <div class="col-lg result_card">
-                <h4>💧 อัตราการไหลของน้ำ (Flow Rate)</h4>
-                <p id="pool_flowrate"></p>
-            </div>
-        </div>
-        <div class="row" id="recommended_products_specifications"> 
-            <div class="col-lg result_card">
-                <h4>🚀 Flow Rate ของปั้มที่ต้องการ</h4>
-                <p> ≥ <span id="recommended_pool_pump_flowrate"></span></p>
-            </div>
-            <div class="col-lg result_card">
-                <h4>🛢️ Flow Rate ของถังกรองที่ต้องการ</h4>
-                <p> ≥ <span id="recommended_pool_filter_flowrate"></span></p>
-            </div>
-            <div class="col-lg result_card">
-                <h4>🤖 หุ่นยนต์ทำความสะอาดสระ</h4>
-                <p><span id="recommended_pool_robot_cleaner"></span></p>
-            </div>
-        </div>
     </div>
 
     <div id="flow_match_page">
@@ -723,6 +728,8 @@ function match_your_pool_page() {
                 document.getElementById('maintenance_link').classList.remove('active')
                 
                 document.getElementById('flow_match_page').style.display = "none";
+                document.getElementById('pool_size_input').style.display = "flex";
+                document.getElementById('turnover_input').style.display = "block";
                 document.getElementById('maintenance_page').style.display = "none";
                 document.getElementById('pool_match_page').style.display = "block";
 
@@ -741,6 +748,7 @@ function match_your_pool_page() {
                 document.getElementById('maintenance_link').classList.remove('active')
             
                 document.getElementById('pool_match_page').style.display = "none";
+                document.getElementById('pool_size_input').style.display = "none";
                 document.getElementById('maintenance_page').style.display = "none";
                 document.getElementById('flow_match_page').style.display = "block";
 
@@ -755,6 +763,8 @@ function match_your_pool_page() {
                 document.getElementById('pool_match_page').style.display = "none";
                 document.getElementById('flow_match_page').style.display = "none";
                 document.getElementById('maintenance_page').style.display = "block";
+                document.getElementById('pool_size_input').style.display = "block";
+                document.getElementById('turnover_input').style.display = "none";
             
                 document.getElementById('poolProducts').style.display = "none";
             }
@@ -831,13 +841,15 @@ function match_your_pool_page() {
             container.innerHTML = items.map(item => {
                 const imageHtml = item.image ? `<div class="recommended_image" style="background: url('${item.image}'); background-size: cover;"></div>` : '';
                 const metaText = type == "robot" ? `เหมาสำหรับสระน้ำ: ${item.max_length} m` : `FlowRate: ${item.spec} m³/h`;
+
                 return `
                 <div class="recommended_item">
                     ${imageHtml}
                 <div class="recommended_content">
                     <a class="recommended_title">${item.title}</a>
                     <div class="recommended_meta">${metaText} <br>${item.price || ''}</div>
-                    <button class="select_product_btn btn btn-primary" onclick="addToVirtualCart('${item.title}','${item.image}','${item.parent_id}', '${item.variant_id}', '${type}', '${item.spec}', '${item.esc_price}');" style="margin: 10px 0;">เลือก</button>
+                    <button class="select_product_btn btn btn-primary" onclick="addToVirtualCart('${item.title}','${item.image}','${item.parent_id}', '${item.variant_id}', '${type}', '${item.spec}', '${item.esc_price}');" style="margin: 10px 0;">✅ เลือก</button>
+                    <button class="select_product_btn btn btn-primary" onclick="window.open('${item.link}', '_blank')" style="margin: 10px 0;">ℹ️ ดูข้อมูลเพิ่มเติม</button>
                     </div>
                 </div>`;
             }).join('');
@@ -1064,7 +1076,7 @@ function match_your_pool_page() {
                 }
             }
 
-            if(type == "filter" && pumpSelected) {
+            if(type == "filter" && (pumpSelected || page == "flow_match")) {
                 if(filterSelected) {
                     virtual_cart.pop();
                 }
@@ -1080,16 +1092,36 @@ function match_your_pool_page() {
                 })
                 
                 initVirtualCart();
+                
+                if(pumpSelected) {
+                    Swal.fire({
+                        title: 'เลือกถังกรองและปั๊มแล้ว !',
+                        text: 'กดเพิ่มลงในตะกร้าได้เลย !',
+                        icon: 'success',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'เลือกถังกรองแล้ว !',
+                        text: 'กดเพิ่มลงในตะกร้าได้เลย !',
+                        icon: 'success',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
 
+                filterSelected = true;
+            }
+
+            if(type == "filter" && !pumpSelected && page != "flow_match") {
                 Swal.fire({
-                    title: 'เลือกถังกรองและปั๊มแล้ว !',
-                    text: 'กดเพิ่มลงในตะกร้าได้เลย !',
-                    icon: 'success',
+                    title: 'โปรดเลือกปั๊มสระว่ายน้ำก่อน !',
+                    icon: 'info',
                     showConfirmButton: false,
                     timer: 1500
                 });
-
-                filterSelected = true;
+                return;
             }
 
             if(type == "pumpset") {
@@ -1127,7 +1159,7 @@ function match_your_pool_page() {
             for(i = 0; i < virtual_cart.length; i++) {
                 document.getElementById("virtualCartTable").innerHTML += `
                 <tr>
-                    <td><img src="${virtual_cart[i].img}" width="150"></td>
+                    <td><img src="${virtual_cart[i].img}" width="80"></td>
                     <td>${virtual_cart[i].title}</td>
                     <td>${virtual_cart[i].spec} m³/h</td>
                     <td>${parseInt(virtual_cart[i].price).toLocaleString()} บาท</td>

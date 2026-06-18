@@ -42,6 +42,29 @@
         user-select: none;
     }
 
+    .recommended_item:first-child {
+        margin: 0 10px;
+        padding: 10px;
+        border-radius: 10px;
+        border: 2px solid #007bff;
+    }
+
+    .recommended_item .recommanded_badge {
+        display: none;
+    }
+
+    .recommended_item:first-child .recommanded_badge {
+        display: block;
+        position: absolute;
+        background: #007bff;
+        color: #fff;
+        border-radius: 5px;
+        margin: -32px auto 0 150px;
+        padding: 0 15px;
+        width: auto;
+    }
+
+
     .recommended_title {
         font-size: 16px; 
         font-weight: 400;
@@ -121,6 +144,10 @@
         border-radius: 10px;
     }
 
+    ul.match_your_pool_menu li {
+        user-select: none;
+    }
+
     #manualSelection,#readyToInstall {
         margin: 0;
     }
@@ -136,10 +163,11 @@
     .jumbotron {
         width: 100%;
         height: auto;
-        background: #111827;
+        background: url(https://www.worldpools.co.th/wp-content/uploads/2026/06/150767.jpg);
         border-radius: 10px;
         padding: 40px 40px 0 40px;
         color: #fff;
+        background-position: bottom;
     }
 
     .jumbotron .system_icon {
