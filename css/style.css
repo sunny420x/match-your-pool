@@ -91,6 +91,10 @@
         white-space: nowrap;
     }
 
+    #virtualCartTable tr td img {
+        width: 100%;
+    }
+
     #recommended_pool_pump_list,#recommended_pool_filter_list,#recommended_pool_robot_cleaner_list,#recommended_pool_pumpset_list {
         width: 50%;
         max-height: 400px;
@@ -293,6 +297,10 @@
     }
     .recommended_chemicals_products ul.products .product {
         max-width: 100% !important;
+    }
+
+    #current_required_flowrate,#current_pump_flowrate {
+        font-size: 14px;
     }
 
     @media (max-width: 768px) {

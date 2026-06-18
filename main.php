@@ -1182,7 +1182,7 @@ function match_your_pool_page() {
             for(i = 0; i < virtual_cart.length; i++) {
                 document.getElementById("virtualCartTable").innerHTML += `
                 <tr>
-                    <td><img src="${virtual_cart[i].img}" width="80"></td>
+                    <td><img src="${virtual_cart[i].img}"></td>
                     <td>${virtual_cart[i].title}</td>
                     <td>${virtual_cart[i].spec} m³/h</td>
                     <td>${parseInt(virtual_cart[i].price).toLocaleString()} บาท</td>
