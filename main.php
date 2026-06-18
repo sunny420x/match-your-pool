@@ -304,8 +304,8 @@ function match_your_pool_settings_page() {
         }
         .container h1 {
             display: block;
-            font-size: 18px;
-            padding: 13px 20px;
+            font-size: 16px;
+            padding: 10px 20px;
             margin: 0 0 20px 0;
             background: #555;
             color: #fff;
@@ -349,18 +349,19 @@ function match_your_pool_settings_page() {
     <div class="white-label-zone no-print">
         <span style="padding: 60px 10px 60px 40px;float: left;font-size: 60px;">📦</span>
         <div style="padding: 20px 0;">
-            <h1>World Pools Smart Choice</h1>
+            <h1>Match Your Pool</h1>
             <p>ตั้งค่าการคำนวณปริมาตรสระน้ำและสินค้าที่เหมาะสม
             <br>
-            <strong>Github Repository:</strong> <a href="https://github.com/sunny420x/worldpools-calculator" target="_blank">https://github.com/sunny420x/worldpools-calculator</a>
+            <strong>Github Repository:</strong> <a href="https://github.com/sunny420x/match-your-pool" target="_blank">https://github.com/sunny420x/match-your-pool</a>
             </p>
         </div>
     </div>
     <div class="wrap">
         <div style="display: flex;">
             <div class="leftside">
-                <h1>World Pools Smart Choice</h1>
+                <h1>Match Your Pool</h1>
                 <a href="admin.php?page=pool-calculator-settings&option=products" style="width: 100%;">สินค้า</a>
+                <a href="admin.php?page=pool-calculator-settings" style="width: 100%;">คู่มือการใช้งาน</a>
             </div>
             <div class="container">
                 <?php
@@ -437,8 +438,41 @@ function match_your_pool_settings_page() {
                 <?php
                 } else {
                 ?>
-                <div style="padding: 25px 25px 25px 25px;">
-
+                <h1>คู่มือการใช้งาน Match Your Pool</h1>
+                <div style="padding: 0 25px 25px 25px;">
+                    <h2>ระบบนี้คืออะไร ?</h2>
+                    <p>
+                        ระบบ Match Your Pool เป็นระบบที่ช่วยเลือกอุปกรณ์สระว่ายน้ำ ตามสเปคของสระว่ายน้ำ ได้แก่ ความกว้าง ความยาว ความลึก โดยจะคำนวณ Flow Rate ที่ต้องการ ตามชั่วโมงของ Turnover
+                        ซึ่งเมื่อได้ Flow Rate แล้ว จะนำไปเทียบกับข้อมูลในตารางที่ชื่อ myp_products ซึ่งจะมีการเก็บข้อมูล Flow Rate ที่สินค้าต่าง ๆ รองรับ
+                    </p>
+                    <h2>วิธีการติดตั้ง</h2>
+                    <p>
+                        สามารถติดตั้งปลั้กอินนี้ได้โดยการดาวน์โหลดไฟล์นี้จาก Github หน้านี้ และอัพโหลดลงในหน้า /wp-admin/plugin-install.php หลังจากอัพโหลด 
+                        และเปิดใช้งาน (Activate) ระบบจะทำการสร้างตารางและคอลัมน์ใหม่จากตารางเดิมโดยอัตโนมัติ
+                    </p>
+                    <h2>สำหรับนักพัฒนาเว็บไซต์</h2>
+                    <p>
+                        ข้อมูลสินค้าย่อย จะถูกดึงข้อมูลโดยใช้ SQL Query ดังนี้
+                    </p>
+                    <pre style="background: #333; color: #fff; padding: 10px;"><?= str_replace("                    ", "", "INSERT INTO wpln_myp_products (parent_id, variant_id, title)
+                    SELECT DISTINCT 
+                        parent.ID AS parent_product_id,
+                        variation.ID AS variation_id,
+                        variation.post_title as variation_title
+                    FROM 
+                        wpln_posts AS variation
+                    INNER JOIN 
+                        wpln_posts AS parent ON variation.post_parent = parent.ID
+                    WHERE 
+                        variation.post_type = 'product_variation'
+                        AND variation.post_status = 'publish'
+                        AND parent.post_type = 'product'
+                        AND parent.post_title NOT LIKE '%Parts%'
+                        AND parent.post_title NOT LIKE '%Multiport%'
+                        AND parent.post_title NOT LIKE '%valve%'
+                        AND parent.post_title NOT LIKE '%ไฟ%'
+                        AND parent.post_title NOT LIKE '%อะไหล่%';"); ?>
+                    </pre>
                 </div>
                 <?php
                 }
@@ -453,7 +487,7 @@ function match_your_pool_page() {
 ?>
 <div class="match_your_pool_page">
     <div class="jumbotron">
-        <span class="system_icon">💧</span>
+        <img src="https://www.worldpools.co.th/wp-content/uploads/2026/05/worldpools_logo_trans_small.webp" alt="" class="logo">
         <h1>Match Your Pool</h1>
         <p>เครื่องมือช่วยเลือกอุปกรณ์สระว่ายน้ำที่เหมาะสมกับสระของคุณ</p>
         <ul class="match_your_pool_menu">
