@@ -12,8 +12,11 @@
     .result_card p {
         margin-top: 20px; 
         font-size: 20px; 
-        color: #007bff; 
         font-weight: 500;
+        color: #111827;
+    }
+    .result_card .colored {
+        color: #007bff; 
     }
 
     #recommended_products_specifications,#recommended_chemicals,#pool_spec {
@@ -25,7 +28,7 @@
     .turnover-btn {
         border: none;
         background-color: #f1f1f1;
-        color: #111;
+        color: #111827;
         padding: 10px 20px;
         border-radius: 10px;
         width: 100%;

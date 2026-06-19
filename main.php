@@ -589,29 +589,29 @@ function match_your_pool_page() {
             <div class="row" id="pool_spec">
                 <div class="col-lg result_card">
                     <h4>💦 ปริมาตรสระน้ำ (Volume)</h4>
-                    <p id="pool_volume"></p>
+                    <p id="pool_volume" class="colored"></p>
                 </div>
                 <div class="col-lg result_card">
                     <h4>🧱 พื้นที่พื้นสระ (Floor Area)</h4>
-                    <p id="pool_floor"></p>
+                    <p id="pool_floor" class="colored"></p>
                 </div>
                 <div class="col-lg result_card">
                     <h4>💧 อัตราการไหลของน้ำ (Flow Rate)</h4>
-                    <p id="pool_flowrate"></p>
+                    <p id="pool_flowrate" class="colored"></p>
                 </div>
             </div>
             <div class="row" id="recommended_products_specifications"> 
                 <div class="col-lg result_card">
                     <h4>🚀 Flow Rate ของปั้มที่ต้องการ</h4>
-                    <p> ≥ <span id="recommended_pool_pump_flowrate"></span></p>
+                    <p class="colored"> ≥ <span id="recommended_pool_pump_flowrate"></span></p>
                 </div>
                 <div class="col-lg result_card">
                     <h4>🛢️ Flow Rate ของถังกรองที่ต้องการ</h4>
-                    <p> ≥ <span id="recommended_pool_filter_flowrate"></span></p>
+                    <p class="colored"> ≥ <span id="recommended_pool_filter_flowrate"></span></p>
                 </div>
                 <div class="col-lg result_card">
                     <h4>🤖 หุ่นยนต์ทำความสะอาดสระ</h4>
-                    <p><span id="recommended_pool_robot_cleaner"></span></p>
+                    <p class="colored"><span id="recommended_pool_robot_cleaner"></span></p>
                 </div>
             </div>
     </div>
@@ -756,7 +756,7 @@ function match_your_pool_page() {
                     </tbody>
                 </table>
             </div>
-            <div class="col-lg-4">
+            <div class="col-lg-4" style="border: 1px solid #eee;">
                 <h4>
                     <span id="virtualCartSummery"></span> 
                 </h4>
@@ -768,16 +768,20 @@ function match_your_pool_page() {
     <div id="maintenance_page">
         <div class="row" id="recommended_chemicals">
             <div class="col-lg result_card">
-                <h4>🧪 คลอรีน 90%</h4>
+                <h4>⚪ คลอรีน 90%</h4>
                 <p style="font-size: 18px; margin-top: 20px;"><span id="recommended_chlorine"></span></p>
             </div>
             <div class="col-lg result_card">
-                <h4>🧪 Swimtrine แก้น้ำเขียว</h4>
+                <h4>🟢 Swimtrine กำจัดตะไคร่</h4>
                 <p style="font-size: 18px; margin-top: 20px;"><span id="recommended_swimtrine"></span></p>
             </div>
             <div class="col-lg result_card">
-                <h4>🧪 Cleartrine แก้น้ำขุ่น</h4>
+                <h4>🔵 Cleartrine แก้น้ำขุ่น</h4>
                 <p style="font-size: 18px; margin-top: 20px;"><span id="recommended_cleartrine"></span></p>
+            </div>
+            <div class="col-lg result_card">
+                <h4>⚫ Blacktrine กำจัดตะไคร่น้ำดำ</h4>
+                <p style="font-size: 18px; margin-top: 20px;"><span id="recommended_blacktrine"></span></p>
             </div>
         </div>
         <div class="recommended_chemicals_products result_card">
@@ -786,6 +790,7 @@ function match_your_pool_page() {
                 'คลอรีน-90-ชนิดเม็ด-เกล็ด-chlorine-90',
                 'น้ำยากำจัดตะไคร่น้ำ-swimtrine-plus',
                 'น้ำยาป้องกันน้ำขุ่น-cleartrine',
+                'black-algaetrine',
                 'liquid-shock-chlorine-ขนาด-1l'
             ];
 
@@ -841,6 +846,7 @@ function match_your_pool_page() {
                 }
 
                 document.getElementById('poolProducts').style.display = "block";
+                document.getElementById('chlorinator').style.display = "block";
             }
 
             if(page == "flow_match") {
@@ -1024,12 +1030,16 @@ function match_your_pool_page() {
             document.getElementById('recommended_pool_filter_flowrate').innerText = `${flowRate.toFixed(2)} m³/h`;
             document.getElementById('recommended_pool_robot_cleaner').innerText = `${floorArea.toFixed(0)} m² / ${length.toFixed(0)} m`;
 
-            document.getElementById('recommended_chlorine').innerText = `${(volume * 2).toFixed(1)} ถึง ${(volume * 3).toFixed(1)} กรัม 2-3 ครั้งต่อสัปดาห์`;
-            document.getElementById('recommended_swimtrine').innerText = `${((60 / 19) * volume).toFixed(1)} mL ในช่วงแรก ทุก ๆ 7 วัน
-            ${((30 / 19) * volume).toFixed(1)} mL เพื่อป้องกัน ทุก ๆ 10 - 14 วัน 
+            document.getElementById('recommended_chlorine').innerHTML = `<span class="colored">${(volume * 2).toFixed(1)} ถึง ${(volume * 3).toFixed(1)}</span> กรัม 2-3 ครั้งต่อสัปดาห์`;
+            document.getElementById('recommended_swimtrine').innerHTML = `<span class="colored">${((60 / 19) * volume).toFixed(1)} mL</span> ในช่วงแรก ทุก ๆ 7 วัน<br>
+            <span class="colored">${((30 / 19) * volume).toFixed(1)} mL</span> เพื่อป้องกัน ทุก ๆ 10 - 14 วัน 
             `;
-            document.getElementById('recommended_cleartrine').innerText = `${((60 / 19) * volume).toFixed(1)} mL ทุก 24 ชั่วโมงจนกว่าน้ำจะใส
-            ${((30 / 19) * volume).toFixed(1)} mL เพื่อป้องกัน ทุก ๆ 10 - 14 วัน 
+            document.getElementById('recommended_cleartrine').innerHTML = `<span class="colored">${((60 / 19) * volume).toFixed(1)} mL</span> ทุก 24 ชั่วโมงจนกว่าน้ำจะใส<br>
+            <span class="colored">${((30 / 19) * volume).toFixed(1)} mL</span> เพื่อป้องกัน ทุก ๆ 10 - 14 วัน 
+            `;
+
+            document.getElementById('recommended_blacktrine').innerHTML = `<span class="colored">${((180 / 19) * volume).toFixed(1)} mL</span> ทุก ๆ 5 วัน<br>
+            <span class="colored">${((90 / 19) * volume).toFixed(1)} mL</span> เพื่อป้องกัน ทุก ๆ 7 วัน 
             `;
 
             document.getElementById('pool_spec').style.display = 'flex';
@@ -1248,9 +1258,9 @@ function match_your_pool_page() {
             for(i = 0; i < virtual_cart.length; i++) {
                 document.getElementById("virtualCartTable").innerHTML += `
                 <tr>
-                    <td><img src="${virtual_cart[i].img}"></td>
+                    <td style="padding: 0; width: 80px;"><img src="${virtual_cart[i].img}"></td>
                     <td>${virtual_cart[i].title}</td>
-                    <td>${virtual_cart[i].spec} m³/h</td>
+                    <td>${virtual_cart[i].type != "chlorinator" ? virtual_cart[i].spec + "m³/h" : "-"}</td>
                     <td>${parseInt(virtual_cart[i].price).toLocaleString()} บาท</td>
                     <td><button class="btn" onclick="removeFromVirtualCart('${virtual_cart[i].title}')">❌</td>
                 </tr>
@@ -1371,8 +1381,7 @@ function match_your_pool_page() {
         initProductsScroller();
         setTurnover(6);
         calculateVolume();
-
-
+        initVirtualCart();
     </script>
 </div>
 <br><br>
