@@ -73,14 +73,14 @@ function match_your_pool_recommend_products() {
     }
 
     $flow_rate = isset( $_POST['flow_rate'] ) ? floatval( wp_unslash( $_POST['flow_rate'] ) ) : 0;
-    $volume = isset( $_POST['volume'] ) ? floatval( wp_unslash( $_POST['volume'] ) ) : 0;
-    $pool_floor_area = isset( $_POST['pool_floor_area'] ) ? floatval( wp_unslash( $_POST['pool_floor_area'] ) ) : 0;
+    $volume = isset( $_POST['volume'] ) ? intval( wp_unslash( $_POST['volume'] ) ) : 0;
+    $turnover = isset( $_POST['turnover'] ) ? floatval( wp_unslash( $_POST['turnover'] ) ) : 0;
 
     if ( $flow_rate <= 0 ) {
         wp_send_json_error( 'Flow rate is required.' );
     }
     
-    $results = match_your_pool_get_recommended_products( $flow_rate, $volume, $pool_floor_area, $_POST['mode']);
+    $results = match_your_pool_get_recommended_products( $flow_rate, $volume, $turnover, $_POST['mode']);
     wp_send_json_success( $results );
 }
 
@@ -114,7 +114,7 @@ function getChlorinators() {
     return getProductsByType('chlorinator');
 }
 
-function match_your_pool_get_recommended_products($flow_rate, $volume, $pool_floor_area, $mode) {
+function match_your_pool_get_recommended_products($flow_rate, $volume, $turnover, $mode) {
     $recommended_products = [
         'pump'   => [],
         'pumpset'   => [],
@@ -190,20 +190,32 @@ function match_your_pool_get_recommended_products($flow_rate, $volume, $pool_flo
         foreach ($chlorinators as $chlorinator) {
             $product = wc_get_product($chlorinator->variant_id ?: $chlorinator->parent_id);
             if ($product) {
-                $spec = $chlorinator->spec;
-                $gram_per_hour = explode(",", $spec)[0];
-                $q_start = explode(":", explode(",", $spec)[1])[0];
-                $q_end = explode(":", explode(",", $spec)[count(explode(",", $spec))-1])[0];
-                $turnover_hours_step = count(explode(",", $spec))-1;
-                $turnover_hours = [];
-                $q_arr = [];
+                // $spec = $chlorinator->spec;
+                // $gram_per_hour = explode(",", $spec)[0];
+                $gram_per_hour = $chlorinator->spec;
+                // $q_start = explode(":", explode(",", $spec)[1])[0];
+                // $q_end = explode(":", explode(",", $spec)[count(explode(",", $spec))-1])[0];
+                // $turnover_hours_step = count(explode(",", $spec))-1;
+                // $turnover_hours = [];
+                // $q_arr = [];
 
-                for($i = 1; $i < $turnover_hours_step; $i++) {
-                    $q_arr[] = explode(":", explode(",", $spec)[$i])[0];
-                    $turnover_hours[] = explode(":", explode(",", $spec)[$i])[1];
-                }
+                // for($i = 1; $i < $turnover_hours_step; $i++) {
+                //     $q_arr[] = explode(":", explode(",", $spec)[$i])[0];
+                //     $turnover_hours[] = explode(":", explode(",", $spec)[$i])[1];
+                // }
 
-                if($volume < $q_start || $volume > $q_end) {
+                // if(in_array($turnover, $turnover_hours)) {
+                //     $turnover_index = array_search($turnover, $turnover);
+                //     if($q_arr[$turnover_index] < $volume) {
+                //         continue;
+                //     }
+                // }
+
+                $target_gram = $volume * 2;
+                $hour_synthesized = round(($volume * 2)/$gram_per_hour, 2);
+                $distance = abs($turnover - $hour_synthesized);
+
+                if($turnover - 1 > $hour_synthesized) {
                     continue;
                 }
 
@@ -216,11 +228,15 @@ function match_your_pool_get_recommended_products($flow_rate, $volume, $pool_flo
                     'variant_id' => $chlorinator->variant_id,
                     'esc_price'=> $product->get_price(),
                     'link'=>$product->get_permalink(),
-                    'q_start'=>$q_start,
-                    'q_end'=>$q_end,
-                    'turnover_hours'=>$turnover_hours,
-                    'q_arr'=>$q_arr,
-                    'gram_per_hour'=>$gram_per_hour
+                    // 'q_start'=>$q_start,
+                    // 'q_end'=>$q_end,
+                    // 'turnover_hours'=>$turnover_hours,
+                    // 'q_arr'=>$q_arr,
+                    'gram_per_hour'=>$gram_per_hour,
+                    'target_gram'=>$target_gram,
+                    'target_volume'=>$volume,
+                    'hour_synthesized'=>$hour_synthesized,
+                    'distance'=>$distance
                 ];
             }
         }
@@ -236,7 +252,7 @@ function match_your_pool_get_recommended_products($flow_rate, $volume, $pool_flo
         usort($recommended_products['pumpset'], fn($a, $b) => $a['spec'] <=> $b['spec']);
     }
     if(count($recommended_products['chlorinator']) > 1) {
-        usort($recommended_products['chlorinator'], fn($a, $b) => (int)$a['q_start'] <=> (int)$b['q_start']);
+        usort($recommended_products['chlorinator'], fn($a, $b) => $a['distance'] <=> $b['distance']);
     }
 
         
@@ -920,12 +936,12 @@ function match_your_pool_page() {
         document.getElementById('recommended_chemicals').style.display = 'none';
         document.getElementById('addMultipleToCartBtn').style.display = 'none';
 
-        async function fetchRecommendedProducts(flowRate, volume, poolFloorArea, mode) {
+        async function fetchRecommendedProducts(flowRate, volume, turnover, mode) {
             const formData = new FormData();
             formData.append('action', 'match_your_pool_recommend_products');
             formData.append('flow_rate', flowRate);
             formData.append('volume', volume);
-            formData.append('pool_floor_area', poolFloorArea);
+            formData.append('turnover', turnover);
             formData.append('mode', mode);
             formData.append('security', wpPoolCalculatorNonce);
 
@@ -955,17 +971,9 @@ function match_your_pool_page() {
                     metaText = `เหมาสำหรับสระน้ำ: ${item.max_length} m`;
                 }
                 else if(type == "chlorinator") {
-                    if(item.q_start == item.q_end) {
-                        metaText += `เหมาะสำหรับสระน้ำ: ${item.q_end} m³ `;
-                    } else {
-                        metaText += `เหมาะสำหรับสระน้ำตั้งแต่: ${item.q_start} ถึง ${item.q_end} m³ `;
-                    }
-                    metaText += `ใช้เกลือ ${item.gram_per_hour} กรัม/ชั่วโมง`
-                    if(item.turnover_hours.length > 1) {
-                        item.turnover_hours.forEach((turnover, index) => {
-                            metaText += `<br>- Turnover: ${turnover} ชม สำหรับสระขนาด ${item.q_arr[index]} m³`;
-                        });
-                    }
+                    metaText += `ผลิตคลอรีนได้ ${item.gram_per_hour} กรัม/ชั่วโมง<br>`
+                    metaText += `<br>ต้องผลิตคลอรีน ${item.target_gram} กรัมสำหรับสระ ${item.target_volume} m³`
+                    metaText += `<br>ใช้เวลาผลิต ${item.hour_synthesized} ชั่วโมง สำหรับสระ ${item.target_volume} m³`
                     spec = metaText;
                 } else {
                     metaText = `FlowRate: ${item.spec} m³/h`;
@@ -1053,11 +1061,11 @@ function match_your_pool_page() {
                 mode = 'onlyFilter'
             }
             
-            await searchByAttributes(flowRate, volume, floorArea, mode);
+            await searchByAttributes(flowRate, volume.toFixed(0), turnover, mode);
         }
 
-        async function searchByAttributes(flowRate, volume, floorArea, mode) {
-            const result = await fetchRecommendedProducts(flowRate, volume, floorArea, mode);
+        async function searchByAttributes(flowRate, volume, turnover, mode) {
+            const result = await fetchRecommendedProducts(flowRate, volume, turnover, mode);
             if ( result && result.success && result.data ) {
                 renderProductList('recommended_pool_pump_list', result.data.pump, 'pump');
                 renderProductList('recommended_pool_pumpset_list', result.data.pumpset, 'pumpset');
