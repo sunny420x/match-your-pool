@@ -122,7 +122,7 @@ function match_your_pool_get_recommended_products($flow_rate, $volume, $pool_flo
         'chlorinator' => []
     ];
 
-    if($mode == "onlyPump") {
+    if($mode == "onlyPump" || $mode == "all") {
         $pumps = getPumpByFlowrate($flow_rate);
     
         // Helper to format product data
@@ -142,7 +142,8 @@ function match_your_pool_get_recommended_products($flow_rate, $volume, $pool_flo
                 ];
             }
         }
-    } elseif($mode == "onlyFilter") {
+    }
+    if($mode == "onlyFilter" || $mode == "all") {
         $filters = getFilterByPumpFlowrate($flow_rate);
 
         foreach ($filters as $filter) {
@@ -161,52 +162,11 @@ function match_your_pool_get_recommended_products($flow_rate, $volume, $pool_flo
                 ];
             }
         }
-    } else {
-        $pumps = getPumpByFlowrate($flow_rate);
-        $filters = getFilterByPumpFlowrate($flow_rate);
+    }
+    if($mode == "onlyPumpset" || $mode == "all") {
         $pumpsets = getPumpsetByFlowrate($flow_rate);
-        $chlorinators = getChlorinators();
-
-        usort($pumps, fn($a, $b) => $a->spec <=> $b->spec);
-        usort($filters, fn($a, $b) => $a->spec <=> $b->spec);
-        usort($pumpsets, fn($a, $b) => $a->spec <=> $b->spec);
-        usort($chlorinators, fn($a, $b) => $a->q_end <=> $b->q_end);
     
         // Helper to format product data
-        foreach ($pumps as $pump) {
-            $product = wc_get_product($pump->variant_id ?: $pump->parent_id);
-            if ($product) {
-                $recommended_products['pump'][] = [
-                    'title' => $pump->title,
-                    'price' => wc_price($product->get_price()),
-                    'url'   => get_permalink($pump->parent_id),
-                    'image' => wp_get_attachment_url($product->get_image_id()),
-                    'spec'  => $pump->spec,
-                    'parent_id' => $pump->parent_id,
-                    'variant_id' => $pump->variant_id,
-                    'esc_price'=> $product->get_price(),
-                    'link'=>$product->get_permalink()
-                ];
-            }
-        }
-
-        foreach ($filters as $filter) {
-            $product = wc_get_product($filter->variant_id ?: $filter->parent_id);
-            if ($product) {
-                $recommended_products['filter'][] = [
-                    'title' => $filter->title,
-                    'price' => wc_price($product->get_price()),
-                    'url'   => get_permalink($filter->parent_id),
-                    'image' => wp_get_attachment_url($product->get_image_id()),
-                    'spec'  => $filter->spec,
-                    'parent_id' => $filter->parent_id,
-                    'variant_id' => $filter->variant_id,
-                    'esc_price'=> $product->get_price(),
-                    'link'=>$product->get_permalink()
-                ];
-            }
-        }
-
         foreach ($pumpsets as $pumpset) {
             $product = wc_get_product($pumpset->variant_id ?: $pumpset->parent_id);
             if ($product) {
@@ -223,6 +183,9 @@ function match_your_pool_get_recommended_products($flow_rate, $volume, $pool_flo
                 ];
             }
         }
+    }
+    if($mode == "onlyChlorinator" || $mode == "all") {
+        $chlorinators = getChlorinators();
 
         foreach ($chlorinators as $chlorinator) {
             $product = wc_get_product($chlorinator->variant_id ?: $chlorinator->parent_id);
@@ -240,7 +203,7 @@ function match_your_pool_get_recommended_products($flow_rate, $volume, $pool_flo
                     $turnover_hours[] = explode(":", explode(",", $spec)[$i])[1];
                 }
 
-                if($volume < $q_start && $volume > $q_end) {
+                if($volume < $q_start || $volume > $q_end) {
                     continue;
                 }
 
@@ -263,6 +226,20 @@ function match_your_pool_get_recommended_products($flow_rate, $volume, $pool_flo
         }
     }
 
+    if(count($recommended_products['pump']) > 1) {
+        usort($recommended_products['pump'], fn($a, $b) => $a['spec'] <=> $b['spec']);
+    }
+    if(count($recommended_products['filter']) > 1) {
+        usort($recommended_products['filter'], fn($a, $b) => $a['spec'] <=> $b['spec']);
+    }
+    if(count($recommended_products['pumpset']) > 1) {
+        usort($recommended_products['pumpset'], fn($a, $b) => $a['spec'] <=> $b['spec']);
+    }
+    if(count($recommended_products['chlorinator']) > 1) {
+        usort($recommended_products['chlorinator'], fn($a, $b) => (int)$a['q_start'] <=> (int)$b['q_start']);
+    }
+
+        
     return $recommended_products;
 }
 
@@ -682,7 +659,6 @@ function match_your_pool_page() {
                     <option value="all">ทั้งหมด</option>
                     <option value="onlyPump">เฉพาะปั๊มสระว่ายน้ำ</option>
                     <option value="onlyFilter">เฉพาะถังกรอง</option>
-                    <option value="onlyChlorinator">เฉพาะเครื่องผลิตคลอรีน</option>
                 </select>
             </div>
         </div>
@@ -754,7 +730,7 @@ function match_your_pool_page() {
                 <div class="card col-lg" id="chlorinatorProducts">
                     <div class="card-header">
                         <h4 class="mb-0">
-                            <span id="pool_chlorinator_status">💡 เครื่องทำคลอรีนจากเกลือ <span id="current_volume"></span></span>
+                            <span id="pool_chlorinator_status">💡 เครื่องผลิตคลอรีนจากเกลือ <span id="current_volume"></span></span>
                         </h4>
                     </div>
                     <div class="card-body">
@@ -880,6 +856,8 @@ function match_your_pool_page() {
                 document.getElementById('flow_match_page').style.display = "block";
 
                 document.getElementById('poolProducts').style.display = "block";
+
+                document.getElementById('chlorinator').style.display = "none";
             }
 
             if(page == "maintenance") {
@@ -966,30 +944,35 @@ function match_your_pool_page() {
 
             container.innerHTML = items.map(item => {
                 const imageHtml = item.image ? `<div class="recommended_image" style="background: url('${item.image}'); background-size: cover;"></div>` : '';
-                let metaText;
+                let metaText = "";
                 if(type == "robot") {
                     metaText = `เหมาสำหรับสระน้ำ: ${item.max_length} m`;
                 }
                 else if(type == "chlorinator") {
-                    metaText = `เหมาสำหรับสระน้ำตั้งแต่: ${item.q_start} ถึง  ${item.q_end} m³`;
-                    if(item.turnover_hours.length > 1) {
-                        metaText += "<br>Turnover:";
-                        item.turnover_hours.forEach((turnover, index) => {
-                            metaText += ` ${turnover} ชม สำหรับ ${item.q_arr[index]} m³`;
-                        });
-                        spec = metaText;
+                    if(item.q_start == item.q_end) {
+                        metaText += `เหมาะสำหรับสระน้ำ: ${item.q_end} m³ `;
+                    } else {
+                        metaText += `เหมาะสำหรับสระน้ำตั้งแต่: ${item.q_start} ถึง ${item.q_end} m³ `;
                     }
+                    metaText += `ใช้เกลือ ${item.gram_per_hour} กรัม/ชั่วโมง`
+                    if(item.turnover_hours.length > 1) {
+                        item.turnover_hours.forEach((turnover, index) => {
+                            metaText += `<br>- Turnover: ${turnover} ชม สำหรับสระขนาด ${item.q_arr[index]} m³`;
+                        });
+                    }
+                    spec = metaText;
                 } else {
                     metaText = `FlowRate: ${item.spec} m³/h`;
                     spec = item.spec;
                 }
 
                 return `
-                <div class="recommended_item">
+                <div class="recommended_item ${type}">
                     ${imageHtml}
                     <div class="recommended_content">
                         <a class="recommended_title">${item.title}</a>
                         <div class="recommended_meta">${metaText} <br>${item.price || ''}</div>
+                        <div class="recommanded_badge">★ สินค้าแนะนำ</div>
                         <button class="select_product_btn btn btn-primary" onclick="addToVirtualCart('${item.title}','${item.image}','${item.parent_id}', '${item.variant_id}', '${type}', '${spec}', '${item.esc_price}');" style="margin: 10px 0;">✅ เลือก</button>
                         <button class="select_product_btn btn btn-primary" onclick="window.open('${item.link}', '_blank')" style="margin: 10px 0;">ℹ️ ดูข้อมูลเพิ่มเติม</button>
                     </div>

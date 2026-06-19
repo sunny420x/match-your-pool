@@ -52,18 +52,22 @@
     .recommended_item .recommanded_badge {
         display: none;
     }
-
     .recommended_item:first-child .recommanded_badge {
         display: block;
-        position: absolute;
+    }
+    .recommended_item:first-child .recommanded_badge {
+        width: max-content;
+        text-align: center;
         background: #007bff;
         color: #fff;
-        border-radius: 5px;
-        margin: -32px auto 0 150px;
-        padding: 0 15px;
-        width: auto;
+        border-radius: 10px;
+        margin: 10px 0 0 0;
+        padding: 2px 10px;
+        font-size: 12px;
     }
-
+    .recommended_item.chlorinator {
+        grid-template-columns: 200px 1fr;
+    }
     .recommended_title {
         font-size: 16px; 
         font-weight: 400;
@@ -288,7 +292,7 @@
 
     .recommended_chemicals_products {
         display: flex;
-        margin: 20px 0 0 0;
+        margin: 10px 0 0 0;
     }
     .recommended_chemicals_products .woocommerce {
         padding: 15px;
