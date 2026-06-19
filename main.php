@@ -170,7 +170,7 @@ function match_your_pool_get_recommended_products($flow_rate, $volume, $pool_flo
         usort($pumps, fn($a, $b) => $a->spec <=> $b->spec);
         usort($filters, fn($a, $b) => $a->spec <=> $b->spec);
         usort($pumpsets, fn($a, $b) => $a->spec <=> $b->spec);
-        usort($chlorinators, fn($a, $b) => $a->q_start <=> $b->q_start);
+        usort($chlorinators, fn($a, $b) => $a->q_end <=> $b->q_end);
     
         // Helper to format product data
         foreach ($pumps as $pump) {
@@ -238,6 +238,10 @@ function match_your_pool_get_recommended_products($flow_rate, $volume, $pool_flo
                 for($i = 1; $i < $turnover_hours_step; $i++) {
                     $q_arr[] = explode(":", explode(",", $spec)[$i])[0];
                     $turnover_hours[] = explode(":", explode(",", $spec)[$i])[1];
+                }
+
+                if($volume < $q_start && $volume > $q_end) {
+                    continue;
                 }
 
                 $recommended_products['chlorinator'][] = [
@@ -755,7 +759,7 @@ function match_your_pool_page() {
                     </div>
                     <div class="card-body">
                         <div style="display: flex">
-                            <div id="recommended_pool_chlorinator_list" class="scroll-container full"></div>
+                            <div id="recommended_pool_chlorinator_list" class="scroll-container"></div>
                         </div>
                     </div>
                 </div>
@@ -951,7 +955,6 @@ function match_your_pool_page() {
 
         function renderProductList(containerId, items, type) {
             const container = document.getElementById(containerId);
-            document.getElementById(containerId).classList.add('full');
 
             if (!container) {
                 return;
@@ -972,11 +975,13 @@ function match_your_pool_page() {
                     if(item.turnover_hours.length > 1) {
                         metaText += "<br>Turnover:";
                         item.turnover_hours.forEach((turnover, index) => {
-                            metaText += ` ${turnover} ชม สำหรับ ${item.q_arr[index]} m³`
+                            metaText += ` ${turnover} ชม สำหรับ ${item.q_arr[index]} m³`;
                         });
+                        spec = metaText;
                     }
                 } else {
-                    metaText = `FlowRate: ${item.spec} m³/h`
+                    metaText = `FlowRate: ${item.spec} m³/h`;
+                    spec = item.spec;
                 }
 
                 return `
@@ -985,7 +990,7 @@ function match_your_pool_page() {
                     <div class="recommended_content">
                         <a class="recommended_title">${item.title}</a>
                         <div class="recommended_meta">${metaText} <br>${item.price || ''}</div>
-                        <button class="select_product_btn btn btn-primary" onclick="addToVirtualCart('${item.title}','${item.image}','${item.parent_id}', '${item.variant_id}', '${type}', '${item.spec}', '${item.esc_price}');" style="margin: 10px 0;">✅ เลือก</button>
+                        <button class="select_product_btn btn btn-primary" onclick="addToVirtualCart('${item.title}','${item.image}','${item.parent_id}', '${item.variant_id}', '${type}', '${spec}', '${item.esc_price}');" style="margin: 10px 0;">✅ เลือก</button>
                         <button class="select_product_btn btn btn-primary" onclick="window.open('${item.link}', '_blank')" style="margin: 10px 0;">ℹ️ ดูข้อมูลเพิ่มเติม</button>
                     </div>
                 </div>`;
@@ -1134,44 +1139,11 @@ function match_your_pool_page() {
         }
 
         function toggleProductRecommendation(type) {
-            const collapse_pool_pump_list = document.getElementById('collapse_pool_pump_list')
-            const collapse_pool_filter_list = document.getElementById('collapse_pool_filter_list')
-            const collapse_pool_robot_cleaner_list = document.getElementById('collapse_pool_robot_cleaner_list')
+            const pool_pump_list = document.getElementById('pumpProducts')
+            const pool_filter_list = document.getElementById('filterProducts')
 
             if(type == "pump") {
-                // collapse_pool_pump_list.classList.remove('show');
-                collapse_pool_filter_list.classList.add('show');
-            }
-
-            if(type == "filter") {
-                // collapse_pool_filter_list.classList.remove('show');
-                collapse_pool_robot_cleaner_list.classList.add('show');
-            }
-
-            if(type == "robot") {
-                collapse_pool_robot_cleaner_list.classList.remove('show');
-            }
-        }
-
-        function backto(type) {
-            const collapse_pool_pump_list = document.getElementById('collapse_pool_pump_list')
-            const collapse_pool_filter_list = document.getElementById('collapse_pool_filter_list')
-            const collapse_pool_robot_cleaner_list = document.getElementById('collapse_pool_robot_cleaner_list')
-
-            collapse_pool_pump_list.classList.remove('show');
-            collapse_pool_filter_list.classList.remove('show');
-            collapse_pool_robot_cleaner_list.classList.remove('show');
-
-            if(type == "pump") {
-                collapse_pool_pump_list.classList.add('show');
-            }
-
-            if(type == "filter") {
-                collapse_pool_filter_list.classList.add('show');
-            }
-            
-            if(type == "robot") {
-                collapse_pool_robot_cleaner_list.classList.add('show');
+                pool_filter_list.style.display = "flex";
             }
         }
 
@@ -1181,18 +1153,6 @@ function match_your_pool_page() {
                     virtual_cart = []
                 }
 
-                virtual_cart.push({
-                    title: title,
-                    img: img,
-                    parent_id: product_id,
-                    variation_id: variation_id,
-                    type: type,
-                    spec: spec,
-                    price: price,
-                })
-
-                initVirtualCart();
-
                 Swal.fire({
                     title: 'เลือกปั๊มสระว่ายน้ำแล้ว !',
                     text: 'เลือกถังกรองสระว่ายน้ำต่อได้เลย !',
@@ -1200,7 +1160,8 @@ function match_your_pool_page() {
                     showConfirmButton: false,
                     timer: 1500
                 });
-
+                
+                addVirtualCart();
                 toggleProductRecommendation(type);
 
                 pumpSelected = true;
@@ -1219,18 +1180,6 @@ function match_your_pool_page() {
                 if(filterSelected) {
                     virtual_cart.pop();
                 }
-
-                virtual_cart.push({
-                    title: title,
-                    img: img,
-                    parent_id: product_id,
-                    variation_id: variation_id,
-                    type: type,
-                    spec: spec,
-                    price: price,
-                })
-                
-                initVirtualCart();
                 
                 if(pumpSelected) {
                     Swal.fire({
@@ -1250,6 +1199,8 @@ function match_your_pool_page() {
                     });
                 }
 
+                addVirtualCart();
+
                 filterSelected = true;
             }
 
@@ -1264,6 +1215,30 @@ function match_your_pool_page() {
             }
 
             if(type == "pumpset") {
+                addVirtualCart();
+
+                Swal.fire({
+                    title: 'เลือกปั๊มและถังกรองสระว่ายน้ำแล้ว !',
+                    text: 'กดเพิ่มลงในตะกร้าได้เลย !',
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+
+            if(type == "chlorinator") {
+                addVirtualCart();
+
+                Swal.fire({
+                    title: 'เลือกเครื่องผลิตคลอรีนแล้ว !',
+                    text: 'กดเพิ่มลงในตะกร้าได้เลย !',
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 1500
+                });   
+            }
+            
+            function addVirtualCart() {                
                 virtual_cart.push({
                     title: title,
                     img: img,
@@ -1275,14 +1250,6 @@ function match_your_pool_page() {
                 })
                 
                 initVirtualCart();
-
-                Swal.fire({
-                    title: 'เลือกปั๊มและถังกรองสระว่ายน้ำแล้ว !',
-                    text: 'กดเพิ่มลงในตะกร้าได้เลย !',
-                    icon: 'success',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
             }
         }
 
