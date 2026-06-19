@@ -38,7 +38,7 @@
     .recommended_item {
         display: grid;
         grid-template-columns: 150px 1fr;
-        min-width: 400px;
+        min-width: max-content;
         user-select: none;
     }
 
@@ -95,30 +95,25 @@
         width: 100%;
     }
 
-    #recommended_pool_pump_list,#recommended_pool_filter_list,#recommended_pool_robot_cleaner_list,#recommended_pool_pumpset_list {
-        width: 50%;
-        max-height: 400px;
-        overflow-x: auto;
-        cursor: grab;
-        -ms-overflow-style: none;  /* Internet Explorer 10+ */
-        scrollbar-width: none;  /* Firefox, Safari 18.2+, Chromium 121+ */
-    }
-
-    #recommended_pool_pump_list.full,
-    #recommended_pool_filter_list.full,
-    #recommended_pool_robot_cleaner_list.full,
-    #recommended_pool_pumpset_list.full {
+    #recommended_pool_pump_list,
+    #recommended_pool_filter_list,
+    #recommended_pool_robot_cleaner_list,
+    #recommended_pool_pumpset_list,
+    #recommended_pool_chlorinator_list {
         width: 100%;
         max-height: 400px;
-        overflow-y: auto;
+        overflow: auto;
         display: flex;
+        cursor: grab;
+        -ms-overflow-style: none;  /* Internet Explorer 10+ */
+        scrollbar-width: none;
     }
 
     .recommended_image img {
         user-select: none;
     }
 
-    #pumpVariations,#filterVariations,#robotVariations {
+    /* #pumpVariations,#filterVariations,#robotVariations {
         width: 0%;
         max-height: 400px;
         overflow-y: auto;
@@ -128,7 +123,7 @@
     #pumpVariations.active ,#filterVariations.active ,#robotVariations.active {
         width: 50%;
         padding: 0 20px;
-    }
+    } */
 
     .turnover-btn-group {
         gap: 10px;
@@ -152,7 +147,7 @@
         user-select: none;
     }
 
-    #manualSelection,#readyToInstall {
+    #manualSelection,#readyToInstall,#chlorinator {
         margin: 0;
     }
 
