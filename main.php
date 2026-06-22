@@ -418,7 +418,7 @@ function custom_add_to_cart_single() {
 
 function match_your_pool_menu() {
     add_menu_page(
-        'Pool Calculator Settings', // Title ของหน้า
+        'Match Your Pool Settings', // Title ของหน้า
         'Match Your Pool', // ชื่อเมนูที่โชว์ในแถบข้าง
         'manage_options', //สิทธิ์การเข้าถึง (Admin)
         'pool-calculator-settings', // Slug ของหน้า
@@ -503,14 +503,15 @@ function match_your_pool_settings_page() {
         <div style="display: flex;">
             <div class="leftside">
                 <h1>Match Your Pool</h1>
-                <a href="admin.php?page=pool-calculator-settings&option=products" style="width: 100%;">สินค้า</a>
-                <a href="admin.php?page=pool-calculator-settings" style="width: 100%;">คู่มือการใช้งาน</a>
+                <a href="admin.php?page=pool-calculator-settings&option=products" style="width: 100%;">🛍️ สินค้า</a>
+                <a href="admin.php?page=pool-calculator-settings" style="width: 100%;">📜 คู่มือการใช้งาน</a>
             </div>
             <div class="container">
                 <?php
                 if(isset($_GET['option']) && $_GET['option'] == "products") {
                 ?>
-                <div style="padding: 25px 25px 25px 25px;">
+                <h1>รายการสินค้าทั้งหมดในระบบ Match Your Pool <button class="button button-primary button-small" onclick="window.location.href='admin.php?page=pool-calculator-settings&option=add_product'">เพิ่มสินค้าใหม่</button></h1>
+                <div style="padding: 0 25px 25px 25px;">
                     <?php
                     global $wpdb;
                     $products_table = $wpdb->prefix."myp_products";
@@ -561,7 +562,8 @@ function match_your_pool_settings_page() {
                     $product_id = sanitize_text_field( $_GET['id'] );
                     $product = $wpdb->get_row($wpdb->prepare("SELECT id, parent_id, variant_id, title, spec FROM $products_table WHERE id = %d", $product_id));
                 ?>
-                <div style="padding: 25px 25px 25px 25px;">
+                <h1>แก้ไขสินค้า</h1>
+                <div style="padding: 0 25px 25px 25px;">
                     <form action="" method="post">
                         <label for="title">ชื่อสินค้า:</label><br>
                         <input type="text" name="title" id="title" value="<?=$product->title?>" style="width: 100%;">
@@ -576,6 +578,40 @@ function match_your_pool_settings_page() {
                         <input type="text" name="spec" id="spec" value="<?=$product->spec?>" style="width: 100%;">
                         <br><br>
                         <input type="submit" name="editProduct" class="button" value="บันทึกการเปลี่ยนแปลง">
+                    </form>
+                </div>
+                <?php
+                } elseif(isset($_GET['option']) && $_GET['option'] == "add_product") {
+                    global $wpdb;
+                    $products_table = $wpdb->prefix."myp_products";
+
+                    if(isset($_POST['addProduct'])) {
+                        $id = sanitize_text_field( $_GET['id'] );
+                        $title = sanitize_text_field( $_POST['title'] );
+                        $parent_id = sanitize_text_field( $_POST['parent_id'] );
+                        $variant_id = sanitize_text_field( $_POST['variant_id'] );
+                        $spec = sanitize_text_field( $_POST['spec'] );
+                        $wpdb->query($wpdb->prepare("INSERT INTO $products_table(title,parent_id,variant_id,spec) VALUES(%s, %s, %s, %s)", $title, $parent_id, $variant_id, $spec));
+                        wp_redirect( admin_url('admin.php?page=pool-calculator-settings&option=products') );
+                        exit;
+                    }
+                ?>
+                <h1>เพิ่มสินค้า</h1>
+                <div style="padding: 0 25px 25px 25px;">
+                    <form action="" method="post">
+                        <label for="title">ชื่อสินค้า:</label><br>
+                        <input type="text" name="title" id="title" style="width: 100%;">
+                        <br>
+                        <label for="parent_id">parent_id:</label><br>
+                        <input type="text" name="parent_id" id="parent_id" style="width: 100%;">
+                        <br>
+                        <label for="variant_id">variant_id:</label><br>
+                        <input type="text" name="variant_id" id="variant_id" style="width: 100%;">
+                        <br>
+                        <label for="spec">Spec:</label><br>
+                        <input type="text" name="spec" id="spec" style="width: 100%;">
+                        <br><br>
+                        <input type="submit" name="addProduct" class="button" value="เพิ่มสินค้า">
                     </form>
                 </div>
                 <?php
@@ -614,6 +650,7 @@ function match_your_pool_settings_page() {
                         AND parent.post_title NOT LIKE '%Multiport%'
                         AND parent.post_title NOT LIKE '%valve%'
                         AND parent.post_title NOT LIKE '%ไฟ%'
+                        AND parent.post_title NOT LIKE 'คลอรีน%'
                         AND parent.post_title NOT LIKE '%อะไหล่%';"); ?>
                     </pre>
                 </div>
