@@ -504,6 +504,7 @@ function match_your_pool_settings_page() {
             <div class="leftside">
                 <h1>Match Your Pool</h1>
                 <a href="admin.php?page=pool-calculator-settings&option=products" style="width: 100%;">🛍️ สินค้า</a>
+                <a href="admin.php?page=pool-calculator-settings&option=sync_products" style="width: 100%;">🔄 Sync</a>
                 <a href="admin.php?page=pool-calculator-settings" style="width: 100%;">📜 คู่มือการใช้งาน</a>
             </div>
             <div class="container">
@@ -612,6 +613,92 @@ function match_your_pool_settings_page() {
                         <input type="text" name="spec" id="spec" style="width: 100%;">
                         <br><br>
                         <input type="submit" name="addProduct" class="button" value="เพิ่มสินค้า">
+                    </form>
+                </div>
+                <?php
+                } elseif(isset($_GET['option']) && $_GET['option'] == "sync_products") {
+                    global $wpdb;
+                    $products_table = $wpdb->prefix."myp_products";
+                    $posts_table =  $wpdb->prefix."posts";
+
+                    $product_id = sanitize_text_field( $_GET['id'] );
+                    $products = $wpdb->get_results("SELECT DISTINCT 
+                        parent.ID AS parent_product_id,
+                        variation.ID AS variation_id,
+                        variation.post_title as variation_title
+                    FROM 
+                        $posts_table AS variation
+                    INNER JOIN 
+                        $posts_table AS parent ON variation.post_parent = parent.ID
+                    WHERE 
+                        variation.post_type = 'product_variation'
+                        AND variation.post_status = 'publish'
+                        AND parent.post_type = 'product'
+                        AND parent.post_title NOT LIKE '%Parts%'
+                        AND parent.post_title NOT LIKE '%Multiport%'
+                        AND parent.post_title NOT LIKE '%valve%'
+                        AND parent.post_title NOT LIKE '%ไฟ%'
+                        AND parent.post_title NOT LIKE '%อะไหล่%';");
+
+                    $existing_products = $wpdb->get_results("SELECT id, parent_id, variant_id, title, spec FROM $products_table");
+
+                    function findExistingProduct($existing_products, $product_id, $variation_id) {
+                        foreach($existing_products as $existing_product) {
+                            if($variation_id == $existing_product->variant_id && $product_id == $existing_product->parent_id) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+
+                    if(isset($_POST['importSelected'])) {
+                        $import_items = [];
+                        foreach ($_POST as $name => $value) {
+                            $safe_name = $name;
+                            
+                            if($safe_name != "importSelected") {
+                                if(count(explode(':', $safe_name)) == 3) {
+                                    $import_items[] = [
+                                        'parent_id' => explode(':', $safe_name)[0],
+                                        'variant_id' => explode(':', $safe_name)[1],
+                                        'title' => explode(':', $safe_name)[2],
+                                    ];
+                                }
+                            }
+                        }
+
+                        foreach( $import_items as $item ) {
+                            $wpdb->query($wpdb->prepare("INSERT INTO $products_table (parent_id, variant_id, title) VALUES(%s, %s, %s)", $item['parent_id'], $item['variant_id'], $item['title']));
+                        }
+                    }
+                ?>
+                <h1>รายการสินค้าที่ต้องการจะนำเข้า</h1>
+                <div style="padding: 0 25px 25px 25px;">
+                    <form action="admin.php?page=pool-calculator-settings&option=sync_products" method="post">
+                        <table class="wp-list-table widefat fixed striped">
+                            <thead>
+                                <th>นำเข้า</th>
+                                <th>Parant</th>
+                                <th>Variant</th>
+                                <th style="width: 800px;">ชื่อสินค้า</th>
+                            </thead>
+                            <tbody>
+                                <?php foreach($products as $row) {
+                                    if(findExistingProduct($existing_products, $row->parent_product_id, $row->variation_id) == false) { 
+                                ?>
+                                    <tr>
+                                        <td><input type="checkbox" name="<?=$row->parent_product_id?>:<?=$row->variation_id?>:<?=$row->variation_title?>" value="1" /></td>
+                                        <td><?=$row->parent_product_id?></td>
+                                        <td><?=$row->variation_id?></td>
+                                        <td><?=$row->variation_title?></td>
+                                    </tr>
+                                <?php
+                                    }
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                        <button type="submit" class="button" name="importSelected">นำเข้าที่เลือก</button>
                     </form>
                 </div>
                 <?php
