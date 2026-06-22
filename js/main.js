@@ -202,7 +202,7 @@ function autoMatchProduct(containerId, items) {
         const filterImageHtml = filter.image ? `<div class="recommended_image" style="background: url('${filter.image}'); background-size: cover; width: 80px; height: 80px; margin: 0 auto;"></div>` : '';
 
         return `
-        <div class="recommended_pair_item" style=" margin-bottom: 15px;">
+        <div class="recommended_pair_item">
             <div class="pair_components">
                 
                 <div class="pump_component" style="flex: 1;">
@@ -235,6 +235,7 @@ function autoMatchProduct(containerId, items) {
                     ✅ เลือกแพ็คเกจนี้
                 </button>
             </div>
+            <div class="recommanded_badge">★ สินค้าแนะนำ</div>
         </div>`;
     }).join('');
 }

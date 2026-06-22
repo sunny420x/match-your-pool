@@ -127,10 +127,36 @@
         margin: 0 10px;
         box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.008), 0 0px 20px 0 rgba(0, 0, 0, 0.05);
         border-radius: 20px;
+        margin-bottom: 15px;
     }
 
     .recommended_pair_item .recommended_meta,.recommended_title {
         user-select: none;
+    }
+
+    .recommended_pair_item:first-child {
+        border: 2px solid #007bff;
+    }
+
+    .recommended_pair_item .recommanded_badge {
+        display: none;
+    }
+
+    .recommended_pair_item:first-child .recommanded_badge {
+        display: block;
+    }
+
+    .recommended_pair_item:first-child .recommanded_badge {
+        width: max-content;
+        text-align: center;
+        background: #007bff;
+        color: #fff;
+        border-radius: 10px;
+        margin: -290px auto 0 auto;
+        padding: 2px 10px;
+        font-size: 12px;
+        /* top: -300px; */
+        /* position: relative; */
     }
 
     .recommended_image img {
