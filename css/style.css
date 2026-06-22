@@ -329,6 +329,26 @@
         font-size: 14px;
     }
 
+    .total_price_label {
+        user-select: none;
+    }
+
+    .pair_components {
+        display: flex; 
+        align-items: center; 
+        justify-content: 
+        space-between; 
+        gap: 10px; 
+        margin-bottom: 15px;
+    }
+
+    .pair_footer {
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        padding-top: 10px;
+    }
+
     @media (max-width: 768px) {
         .recommended_item {
             gap: 0;
