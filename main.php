@@ -51,12 +51,13 @@ function match_your_pool_plugin_install() {
     global $wpdb;
 
     $myp_products_table = $wpdb->prefix . 'myp_products';
+    $logs_table = $wpdb->prefix . 'myp_logs';
     $charset_collate = $wpdb->get_charset_collate();
 
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
     
     // สร้างตาราง myp_products_table
-    $sql_history = "CREATE TABLE $myp_products_table (
+    $products_table_sql = "CREATE TABLE $myp_products_table (
         id bigint(20) NOT NULL AUTO_INCREMENT,
         title varchar(200),
         parent_id varchar(200),
@@ -67,8 +68,15 @@ function match_your_pool_plugin_install() {
         PRIMARY KEY  (id)
     ) $charset_collate;";
 
+    $logs_table_sql = "CREATE TABLE $logs_table (
+        id bigint(20) NOT NULL AUTO_INCREMENT,
+        type varchar(200),
+        value TEXT,
+    ) $charset_collate;";
+
     // รัน dbDelta เพื่ออัปเดต/สร้างตาราง
-    dbDelta( $sql_history );
+    dbDelta( $products_table_sql );
+    dbDelta( $logs_table_sql );
 }
 
 add_action( 'wp_enqueue_scripts', 'match_your_pool_enqueue_assets' );
@@ -1079,23 +1087,13 @@ function match_your_pool_page() {
 
 add_shortcode( 'match_your_pool_page', 'match_your_pool_page' );
 
-// Get Product and add to custom table
+add_action('wp_ajax_track_calculator_usage', 'track_calculator_usage');
+add_action('wp_ajax_nopriv_track_calculator_usage', 'track_calculator_usage');
 
-// INSERT INTO wpln_myp_products (parent_id, variant_id, title)
-// SELECT DISTINCT 
-//     parent.ID AS parent_product_id,
-//     variation.ID AS variation_id,
-//     variation.post_title as variation_title
-// FROM 
-//     wpln_posts AS variation
-// INNER JOIN 
-//     wpln_posts AS parent ON variation.post_parent = parent.ID
-// WHERE 
-//     variation.post_type = 'product_variation'
-//     AND variation.post_status = 'publish'
-//     AND parent.post_type = 'product'
-//     AND parent.post_title NOT LIKE '%Parts%'
-//     AND parent.post_title NOT LIKE '%Multiport%'
-//     AND parent.post_title NOT LIKE '%valve%'
-//     AND parent.post_title NOT LIKE '%ไฟ%'
-//     AND parent.post_title NOT LIKE '%อะไหล่%';
+function track_calculator_usage() {
+    global $wpdb;
+    $myp_logs = $wpdb->prefix . 'myp_logs';
+    $items = stripslashes($_POST['items']);
+    $wpdb->query($wpdb->prepare("INSERT INTO $myp_logs(type, value) VALUES(%s, %s)", "add-to-cart", $items));
+    wp_send_json_success();
+}

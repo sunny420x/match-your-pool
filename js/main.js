@@ -594,8 +594,15 @@ async function addMultipleToCart() {
             console.error('Error adding item:', error);
         }
     }
+
+    fetch('/wp-admin/admin-ajax.php', {
+        method: 'POST',
+        body: new URLSearchParams({
+            action: 'track_calculator_usage',
+            items: JSON.stringify(virtual_cart)
+        })
+    });
     
-    // หลังจากวนลูปครบแล้วค่อยอัปเดต UI ครั้งเดียว
     jQuery(document.body).trigger('wc_fragment_refresh');
 }
 
