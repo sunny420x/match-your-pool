@@ -71,7 +71,7 @@ function match_your_pool_plugin_install() {
     $logs_table_sql = "CREATE TABLE $logs_table (
         id bigint(20) NOT NULL AUTO_INCREMENT,
         type varchar(200),
-        value TEXT,
+        value TEXT
     ) $charset_collate;";
 
     // รัน dbDelta เพื่ออัปเดต/สร้างตาราง
@@ -263,7 +263,7 @@ function match_your_pool_get_recommended_products($flow_rate, $volume, $turnover
                         'variant_id' => $filter->variant_id,
                     ],
                     // Combined total price helper (optional, but useful for packages)
-                    'total_price' => wc_price($pump_product->get_price() + $filter_product->get_price())
+                    'total_price' => wc_price( (float) $pump_product->get_price() + (float) $filter_product->get_price() )
                 ];
             }
         }
