@@ -71,6 +71,8 @@ function match_your_pool_plugin_install() {
     $logs_table_sql = "CREATE TABLE $logs_table (
         id bigint(20) NOT NULL AUTO_INCREMENT,
         type varchar(200),
+        user_id INT(11),
+        created_at DATETIME,
         value TEXT
     ) $charset_collate;";
 
@@ -1008,7 +1010,8 @@ function match_your_pool_page() {
             <div class="table-responsive col-lg-8">
                 <table class="table">
                     <thead>
-                        <th colspan="2">รายการ</th>
+                        <th style="width: 80px;"></th>
+                        <th>รายการ</th>
                         <th>สเปค</th>
                         <th>ราคา</th>
                         <th>จัดการ</th>
@@ -1094,6 +1097,7 @@ function track_calculator_usage() {
     global $wpdb;
     $myp_logs = $wpdb->prefix . 'myp_logs';
     $items = stripslashes($_POST['items']);
-    $wpdb->query($wpdb->prepare("INSERT INTO $myp_logs(type, value) VALUES(%s, %s)", "add-to-cart", $items));
+    $user_id = get_current_user_id() ?? null;
+    $wpdb->query($wpdb->prepare("INSERT INTO $myp_logs(type, value, user_id, created_at) VALUES(%s, %s, %s, NOW())", "add-to-cart", $items, $user_id));
     wp_send_json_success();
 }
