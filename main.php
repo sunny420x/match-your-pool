@@ -736,7 +736,7 @@ function match_your_pool_settings_page() {
                             foreach($usages as $usage) {
                             ?>
                             <tr>
-                                <td><?=$usage->display_name ?? "-"?></td>
+                                <td><a href="/wp-admin/user-edit.php?user_id=<?=$usage->user_id?>&wp_http_referer=%2Fwp-admin%2Fusers.php"><?=$usage->display_name ?? "-"?></a></td>
                                 <td><?=$usage->user_email ?? "-"?></td>
                                 <td><?=$usage->type?></td>
                                 <td>
