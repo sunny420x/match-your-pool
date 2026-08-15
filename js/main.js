@@ -520,7 +520,7 @@ function initVirtualCart() {
     for(i = 0; i < virtual_cart.length; i++) {
         document.getElementById("virtualCartTable").innerHTML += `
         <tr>
-            <td style="padding: 0; width: 80px;"><img src="${virtual_cart[i].img}"></td>
+            <td style="padding: 0; width: 80px;"><img src="${virtual_cart[i].img}" width="100%"></td>
             <td>${virtual_cart[i].title}</td>
             <td>${virtual_cart[i].type != "chlorinator" ? virtual_cart[i].spec + "m³/h" : "-"}</td>
             <td>${parseInt(virtual_cart[i].price).toLocaleString()} บาท</td>
