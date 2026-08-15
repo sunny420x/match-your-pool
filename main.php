@@ -489,6 +489,9 @@ function match_your_pool_settings_page() {
             width: 100%;
             text-decoration: none;
         }
+        .leftside a.active {
+            background: #fff;
+        }
         .leftside a:hover {
             background: #fff;
             cursor: pointer;
@@ -500,10 +503,10 @@ function match_your_pool_settings_page() {
         }
     </style>
     <div class="white-label-zone no-print">
-        <span style="padding: 40px 10px 40px 40px;float: left;font-size: 60px;">📦</span>
+        <span style="padding: 40px 10px 40px 40px;float: left;font-size: 60px;">🧮</span>
         <div style="padding: 20px 0;">
             <h1>Match Your Pool</h1>
-            <p>ตั้งค่าการคำนวณปริมาตรสระน้ำและสินค้าที่เหมาะสม
+            <p>คำนวณปริมาตรสระน้ำและเลือกสินค้าภายในร้านที่เหมาะสม
             <br>
             <strong>Github Repository:</strong> <a href="https://github.com/sunny420x/match-your-pool" target="_blank">https://github.com/sunny420x/match-your-pool</a>
             </p>
@@ -513,9 +516,11 @@ function match_your_pool_settings_page() {
         <div style="display: flex;">
             <div class="leftside">
                 <h1>Match Your Pool</h1>
-                <a href="admin.php?page=pool-calculator-settings&option=products" style="width: 100%;">🛍️ สินค้า</a>
-                <a href="admin.php?page=pool-calculator-settings&option=sync_products" style="width: 100%;">🔄 Sync</a>
-                <a href="admin.php?page=pool-calculator-settings" style="width: 100%;">📜 คู่มือการใช้งาน</a>
+                <a href="admin.php?page=pool-calculator-settings&option=products" style="width: 100%;" <?php if(isset($_GET['option']) && $_GET['option'] == "products") { echo "class='active'"; } ?>>🛍️ สินค้า</a>
+                <a href="admin.php?page=pool-calculator-settings&option=sync_products" style="width: 100%;" <?php if(isset($_GET['option']) && $_GET['option'] == "sync_products") { echo "class='active'"; } ?>>🔄 Sync</a>
+                <h1>อื่น ๆ</h1>
+                <a href="admin.php?page=pool-calculator-settings&option=usage_history" style="width: 100%;" <?php if(isset($_GET['option']) && $_GET['option'] == "usage_history") { echo "class='active'"; } ?>>📋 ประวัติการใช้งานระบบ</a>
+                <a href="admin.php?page=pool-calculator-settings" style="width: 100%;" <?php if(!isset($_GET['option'])) { echo "class='active'"; } ?>>📜 คู่มือการใช้งาน</a>
             </div>
             <div class="container">
                 <?php
@@ -710,6 +715,52 @@ function match_your_pool_settings_page() {
                         </table>
                         <button type="submit" class="button" name="importSelected">นำเข้าที่เลือก</button>
                     </form>
+                </div>
+                <?php
+                } elseif(isset($_GET['option']) && $_GET['option'] == "usage_history") {
+                    global $wpdb;
+                    $usages = $wpdb->get_results("SELECT l.id, l.type, l.value, l.user_id, l.created_at, u.display_name, u.user_email, u.ID FROM {$wpdb->prefix}myp_logs as l LEFT JOIN {$wpdb->prefix}users as u ON u.ID = l.user_id ORDER BY l.id DESC");
+                ?>
+                <h1>ประวัติการใช้งานระบบ</h1>
+                <div style="padding: 0 25px 25px 25px;">
+                    <table class="wp-list-table widefat fixed striped">
+                        <thead>
+                            <th>ชื่อผู้ใช้งาน</th>
+                            <th>อีเมล์</th>
+                            <th>Event</th>
+                            <th>ข้อมูล</th>
+                            <th>สร้างเมื่อ</th>
+                        </thead>
+                        <tbody>
+                            <?php
+                            foreach($usages as $usage) {
+                            ?>
+                            <tr>
+                                <td><?=$usage->display_name ?? "-"?></td>
+                                <td><?=$usage->user_email ?? "-"?></td>
+                                <td><?=$usage->type?></td>
+                                <td>
+                                    <ul>
+                                    <?php
+                                    $sum = 0;
+                                    $data = json_decode($usage->value);
+                                    foreach($data as $row) {
+                                    ?>
+                                    <li><?=$row->title?> (<?=$row->type?>)<br><strong>ราคา</strong> <?=number_format($row->price)?> บาท</li>
+                                    <?php
+                                    $sum += $row->price;
+                                    }
+                                    ?>
+                                    <li><strong>ยอดรวม:</strong> <?=number_format($sum)?></li>
+                                    </ul>
+                                </td>
+                                <td><?=$usage->created_at?></td>
+                            </tr>
+                            <?php
+                            }
+                            ?>
+                        </tbody>
+                    </table>
                 </div>
                 <?php
                 } else {
